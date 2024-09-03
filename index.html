@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily BIAS</title>
+  <!-- Einbindung der Roboto-Schriftart von Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    /* Grundlegende Seitengestaltung */
     body {
       display: flex;
       justify-content: center;
@@ -16,6 +18,8 @@
       background-color: #f2f2f2;
       color: #333;
     }
+    
+    /* Container für den Hauptinhalt */
     .container {
       background-color: #fff;
       border-radius: 5px;
@@ -24,29 +28,38 @@
       max-width: 800px;
       width: 90%;
     }
+    
+    /* Überschrift-Styling */
     h1 {
       text-align: center;
       color: #005a9e;
       margin-bottom: 30px;
       font-weight: 700;
     }
+    
+    /* Tabellen-Styling */
     table {
       width: 100%;
       border-collapse: collapse;
     }
+    
     th, td {
       padding: 10px;
       text-align: left;
       border-bottom: 1px solid #ddd;
     }
+    
     th {
       background-color: #f2f2f2;
       font-weight: 700;
       color: #005a9e;
     }
+    
     tr:hover {
       background-color: #f2f2f2;
     }
+    
+    /* Dropdown-Menü-Styling */
     select {
       width: 100%;
       padding: 8px;
@@ -56,10 +69,13 @@
       background-color: #f2f2f2;
       color: #333;
     }
+    
     select:focus {
       outline: none;
       border-color: #005a9e;
     }
+    
+    /* Farbindikator-Styling */
     .color-indicator {
       width: 16px;
       height: 16px;
@@ -68,11 +84,14 @@
       margin-right: 8px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     }
+    
+    /* Button-Container-Styling */
     .button-container {
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
     }
+    
     .button-container button {
       padding: 10px 20px;
       border: none;
@@ -80,19 +99,21 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+    
     .button-container button:hover {
       background-color: #005a9e;
       color: white;
     }
   </style>
-   <script>
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Selektieren aller relevanten Elemente
       const selects = document.querySelectorAll('select');
       const longPercentageElem = document.getElementById('long-percentage');
       const shortPercentageElem = document.getElementById('short-percentage');
       const rangePercentageElem = document.getElementById('range-percentage');
 
-      // Function to update selection based on button click
+      // Funktion zum Aktualisieren der Auswahl basierend auf Button-Klicks
       function updateSelection(value) {
         selects.forEach(select => {
           switch (value) {
@@ -114,7 +135,7 @@
         updatePercentage();
       }
 
-      // Function to update color indicators and body background
+      // Funktion zum Aktualisieren der Farbindikatoren und des Hintergrunds
       function updateColor() {
         let greenCount = 0;
         let redCount = 0;
@@ -146,6 +167,7 @@
           }
         });
 
+        // Ändern der Hintergrundfarbe basierend auf der Anzahl der Indikatoren
         if (greenCount >= 6) {
           body.style.backgroundColor = '#C2FFC2';
         } else if (redCount >= 6) {
@@ -157,8 +179,8 @@
         }
       }
 
-      // Function to calculate and update the percentages
-      function updatePercentage() {
+      // Funktion zum Berechnen und Aktualisieren der Prozentsätze
+      function updatePercentageOld() {
         let longCount = 0;
         let shortCount = 0;
         let rangeCount = 0;
@@ -181,6 +203,7 @@
           }
         });
 
+        // Berechnung und Anzeige der Prozentsätze
         const longPercentage = ((longCount / totalCount) * 100).toFixed();
         const shortPercentage = ((shortCount / totalCount) * 100).toFixed();
         const rangePercentage = ((rangeCount / totalCount) * 100).toFixed();
@@ -189,7 +212,50 @@
         shortPercentageElem.textContent = `${shortPercentage}%`;
         rangePercentageElem.textContent = `${rangePercentage}%`;
       }
+              
+      function updatePercentage() {
+  let longCount = 0;
+  let shortCount = 0;
+  let rangeCount = 0;
+  let totalSelectedCount = 0;
 
+  selects.forEach(select => {
+    const value = select.value;
+    if (value !== "") {  // Nur ausgewählte Optionen zählen
+      totalSelectedCount++;
+      switch (value) {
+        case 'long':
+        case '> DH':
+        case '> IR':
+        case '> VA':
+        case '> preDH':
+          longCount++;
+          break;
+        case 'short':
+        case '< DL':
+        case '< IR':
+        case '< VA':
+        case '< preDL':
+          shortCount++;
+          break;
+        case 'range':
+          rangeCount++;
+          break;
+      }
+    }
+  });
+
+  // Berechnung und Anzeige der Prozentsätze
+  const longPercentage = totalSelectedCount > 0 ? ((longCount / totalSelectedCount) * 100).toFixed() : 0;
+  const shortPercentage = totalSelectedCount > 0 ? ((shortCount / totalSelectedCount) * 100).toFixed() : 0;
+  const rangePercentage = totalSelectedCount > 0 ? ((rangeCount / totalSelectedCount) * 100).toFixed() : 0;
+
+  longPercentageElem.textContent = `Long: ${longPercentage}%`;
+  shortPercentageElem.textContent = `Short: ${shortPercentage}%`;
+  rangePercentageElem.textContent = `Range: ${rangePercentage}%`;
+}
+
+      // Event-Listener für Button-Klicks
       const buttons = document.querySelectorAll('.button-container button');
       buttons.forEach(button => {
         button.addEventListener('click', function() {
@@ -198,11 +264,11 @@
         });
       });
 
-      // Initial color and percentage update
+      // Initiale Farb- und Prozentsatzaktualisierung
       updateColor();
       updatePercentage();
 
-      // Event listener for select change
+      // Event-Listener für Änderungen in den Dropdown-Menüs
       selects.forEach(select => {
         select.addEventListener('change', () => {
           updateColor();
@@ -214,9 +280,9 @@
 </head>
 <body>
   <div class="container">
-              
     <h1>Daily BIAS</h1>
-              
+    
+    <!-- Neue Tabelle mit Indikatoren und Auswahlmöglichkeiten -->
     <table>
       <thead>
         <tr>
@@ -226,6 +292,7 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
           <td>Price Action</td>
           <td>
             <select>
@@ -239,7 +306,7 @@
             <span class="color-indicator"></span>
           </td>
         </tr>
-                    <tr>
+        <tr>
           <td>Volume Profile</td>
           <td>
             <select>
@@ -266,7 +333,7 @@
             <span class="color-indicator"></span>
           </td>
         </tr>
-              <tr>
+        <tr>
           <td>Price -> Value Area</td>
           <td>
             <select>
@@ -280,7 +347,7 @@
             <span class="color-indicator"></span>
           </td>
         </tr>
-                        <tr>
+        <tr>
           <td>DH/DL (heute)</td>
           <td>
             <select>
@@ -294,7 +361,7 @@
             <span class="color-indicator"></span>
           </td>
         </tr>
-                      <tr>
+        <tr>
           <td>DH/DL (Vortrag)</td>
           <td>
             <select>
@@ -336,7 +403,7 @@
             <span class="color-indicator"></span>
           </td>
         </tr>
-              <tr>
+        <tr>
           <td>MP: Single Print (Vortag)</td>
           <td>
             <select>
@@ -378,30 +445,28 @@
             <span class="color-indicator"></span>
           </td>
         </tr>
-
       </tbody>
     </table>
 
-<div class="button-container">
-  <button data-value="long" style="background-color:#C2FFC2; border: 2px solid #008000; border-radius: 5px;">Long</button>
-  <div class="percentage-container">
-    <p style="background-color:#C2FFC2; font-weight: bold; border: 2px solid #008000; border-radius: 5px; padding: 5px;" id="long-percentage">Long: 0%</p>
+    <!-- Container für Buttons und Prozentanzeigen -->
+    <div class="button-container">
+      <button data-value="long" style="background-color:#C2FFC2; border: 2px solid #008000; border-radius: 5px;">Long</button>
+      <div class="percentage-container">
+        <p style="background-color:#C2FFC2; font-weight: bold; border: 2px solid #008000; border-radius: 5px; padding: 5px;" id="long-percentage">Long: 0%</p>
+      </div>
+
+      <button data-value="short" style="background-color:#FBBDBD; border: 2px solid #ff0000; border-radius: 5px;">Short</button>
+      <div class="percentage-container">
+        <p style="background-color:#FBBDBD; font-weight: bold; border: 2px solid #ff0000; border-radius: 5px; padding: 5px;" id="short-percentage">Short: 0%</p>
+      </div>
+
+      <button data-value="range" style="background-color:#FFE9C0; border: 2px solid #ffa500; border-radius: 5px;">Range</button>
+      <div class="percentage-container">
+        <p style="background-color:#FFE9C0; font-weight: bold; border: 2px solid #ffa500; border-radius: 5px; padding: 5px;" id="range-percentage">Range: 0%</p>
+      </div>
+
+      <button data-value="clear" style="border: 2px solid #ccc; border-radius: 5px;">Clear</button>
+    </div>
   </div>
-
-  <button data-value="short" style="background-color:#FBBDBD; border: 2px solid #ff0000; border-radius: 5px;">Short</button>
-  <div class="percentage-container">
-    <p style="background-color:#FBBDBD; font-weight: bold; border: 2px solid #ff0000; border-radius: 5px; padding: 5px;" id="short-percentage">Short: 0%</p>
-  </div>
-
-  <button data-value="range" style="background-color:#FFE9C0; border: 2px solid #ffa500; border-radius: 5px;">Range</button>
-  <div class="percentage-container">
-    <p style="background-color:#FFE9C0; font-weight: bold; border: 2px solid #ffa500; border-radius: 5px; padding: 5px;" id="range-percentage">Range: 0%</p>
-  </div>
-
-  <button data-value="clear" style="border: 2px solid #ccc; border-radius: 5px;">Clear</button>
-</div>
-
-  </div>
-
 </body>
 </html>
