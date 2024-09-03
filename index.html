@@ -6,6 +6,8 @@
   <title>Daily BIAS</title>
   <!-- Einbindung der Roboto-Schriftart von Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Einbindung der jsPDF-Bibliothek -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     /* Grundlegende Seitengestaltung */
     body {
@@ -104,6 +106,38 @@
       background-color: #005a9e;
       color: white;
     }
+    
+        /* Container für Titel und Drucken-Button */
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    /* Stil für den Titel */
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #005a9e;
+    }
+
+    /* Stil für den Drucken-Button */
+    #printButton {
+      background-color: transparent; /* Hintergrund transparent */
+      color: #333; /* Textfarbe */
+      padding: 10px 20px;
+      border: 2px solid #333; /* Rahmenfarbe */
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s; /* Übergangseffekte */
+    }
+
+    /* Hover-Effekt für den Button */
+    #printButton:hover {
+      background-color: #333; /* Hintergrundfarbe beim Hover */
+      color: white; /* Textfarbe beim Hover */
+    }
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -112,6 +146,301 @@
       const longPercentageElem = document.getElementById('long-percentage');
       const shortPercentageElem = document.getElementById('short-percentage');
       const rangePercentageElem = document.getElementById('range-percentage');
+    
+          function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Aktuelles Datum mit Wochentag und Kalenderwoche
+  const currentDate = new Date();
+  const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  const weekday = weekdays[currentDate.getDay()];
+
+  // Funktion zur Berechnung der Kalenderwoche
+  function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1) / 7);
+    return weekNo;
+  }
+
+  const kw = getWeekNumber(currentDate);
+
+  // Formatierte Zeit
+  const formattedDate = `${weekday}, ${String(currentDate.getDate()).padStart(2, '0')}.${String(currentDate.getMonth() + 1).padStart(2, '0')}.${String(currentDate.getFullYear()).slice(-2)} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')} (KW${kw})`;
+
+  // Titel und Informationen
+  doc.setFontSize(18);
+  doc.setTextColor(0, 102, 204); // Blau für den Titel
+  doc.text("Daily BIAS Auswertung", 20, 20);
+  doc.setFontSize(12);
+  doc.setTextColor(0); // Schwarz für die zusätzlichen Informationen
+  doc.text(formattedDate, 190, 20, null, null, "right");
+
+  // Indikatoren und Optionen
+  doc.setFontSize(14);
+  doc.setTextColor(0); // Schwarz für Überschriften
+  doc.setFont(undefined, 'bold');
+  doc.text("Indikatoren und Optionen:", 20, 40);
+  doc.setFont(undefined, 'normal');
+
+  let yPos = 50;
+  selects.forEach((select, index) => {
+    const indicator = select.closest('tr').querySelector('td:first-child').textContent;
+    const option = select.value || "Nicht ausgewählt";
+    doc.setFontSize(12);
+    doc.setTextColor(0); // Schwarz für normalen Text
+    doc.text(`${index + 1}. ${indicator}:`, 25, yPos);
+
+    // Farbliche Kennzeichnung der Optionen
+    switch(option) {
+      case 'long':
+      case '> DH':
+      case '> IR':
+      case '> VA':
+      case '> preDH':
+        doc.setTextColor(0, 128, 0); // Grün für Long
+        break;
+      case 'short':
+      case '< DL':
+      case '< IR':
+      case '< VA':
+      case '< preDL':
+        doc.setTextColor(255, 0, 0); // Rot für Short
+        break;
+      case 'range':
+        doc.setTextColor(255, 165, 0); // Orange für Range
+        break;
+      default:
+        doc.setTextColor(128); // Grau für nicht ausgewählt
+    }
+    doc.text(option, 120, yPos);
+    yPos += 10;
+  });
+
+  // Prozentsätze
+  yPos += 10;
+  doc.setFontSize(14);
+  doc.setTextColor(0); // Schwarz für Überschriften
+  doc.setFont(undefined, 'bold');
+  doc.text("Auswertung:", 20, yPos);
+  doc.setFont(undefined, 'normal');
+  yPos += 10;
+  doc.setFontSize(12);
+
+  // Long Prozentsatz
+  doc.setTextColor(0, 128, 0);
+  doc.text(`Long: ${longPercentageElem.textContent}`, 25, yPos);
+  yPos += 10;
+
+  // Short Prozentsatz
+  doc.setTextColor(255, 0, 0);
+  doc.text(`Short: ${shortPercentageElem.textContent}`, 25, yPos);
+  yPos += 10;
+
+  // Range Prozentsatz
+  doc.setTextColor(255, 165, 0);
+  doc.text(`Range: ${rangePercentageElem.textContent}`, 25, yPos);
+  yPos += 20;
+
+  // Handlungsempfehlung
+  doc.setFontSize(14);
+  doc.setTextColor(0); // Schwarz für Überschriften
+  doc.setFont(undefined, 'bold');
+  doc.text("Handlungsempfehlung:", 20, yPos);
+  doc.setFont(undefined, 'normal');
+  yPos += 10;
+  doc.setFontSize(12);
+
+  const longPercentage = parseInt(longPercentageElem.textContent.match(/\d+/)[0]);
+  const shortPercentage = parseInt(shortPercentageElem.textContent.match(/\d+/)[0]);
+  const rangePercentage = parseInt(rangePercentageElem.textContent.match(/\d+/)[0]);
+
+  let recommendation = "";
+  let recommendationColor = "";
+  if (longPercentage > shortPercentage && longPercentage > rangePercentage) {
+    doc.setTextColor(0, 128, 0); // Grün für Long-Empfehlung
+    recommendation = "Long-Position empfohlen";
+    recommendationColor = "Long";
+  } else if (shortPercentage > longPercentage && shortPercentage > rangePercentage) {
+    doc.setTextColor(255, 0, 0); // Rot für Short-Empfehlung
+    recommendation = "Short-Position empfohlen";
+    recommendationColor = "Short";
+  } else if (rangePercentage >= longPercentage && rangePercentage >= shortPercentage) {
+    doc.setTextColor(255, 165, 0); // Orange für Range-Empfehlung
+    recommendation = "Seitwärtsbewegung erwartet, keine klare Positionierung empfohlen";
+    recommendationColor = "Range";
+  } else {
+    doc.setTextColor(0); // Schwarz für keine klare Empfehlung
+    recommendation = "Keine klare Empfehlung möglich, weitere Analyse erforderlich";
+    recommendationColor = "Neutral";
+  }
+
+  doc.text(recommendation, 25, yPos);
+  yPos += 20;
+
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Aktuelles Datum mit Wochentag und Kalenderwoche
+  const currentDate = new Date();
+  const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  const weekday = weekdays[currentDate.getDay()];
+
+  // Funktion zur Berechnung der Kalenderwoche
+  function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1) / 7);
+    return weekNo;
+  }
+
+  const kw = getWeekNumber(currentDate);
+
+  // Formatierte Zeit
+  const formattedDate = `${weekday}, ${String(currentDate.getDate()).padStart(2, '0')}.${String(currentDate.getMonth() + 1).padStart(2, '0')}.${String(currentDate.getFullYear()).slice(-2)} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')} (KW${kw})`;
+
+  // Titel und Informationen
+  doc.setFontSize(18);
+  doc.setTextColor(0, 102, 204); // Blau für den Titel
+  doc.text("Daily BIAS Auswertung", 20, 20);
+  doc.setFontSize(12);
+  doc.setTextColor(0); // Schwarz für die zusätzlichen Informationen
+  doc.text(formattedDate, 190, 20, null, null, "right");
+
+  // Indikatoren und Optionen
+  doc.setFontSize(14);
+  doc.setTextColor(0); // Schwarz für Überschriften
+  doc.setFont(undefined, 'bold');
+  doc.text("Indikatoren und Optionen:", 20, 40);
+  doc.setFont(undefined, 'normal');
+
+  let yPos = 50;
+  selects.forEach((select, index) => {
+    const indicator = select.closest('tr').querySelector('td:first-child').textContent;
+    const option = select.value || "Nicht ausgewählt";
+    doc.setFontSize(12);
+    doc.setTextColor(0); // Schwarz für normalen Text
+    doc.text(`${index + 1}. ${indicator}:`, 25, yPos);
+
+    // Farbliche Kennzeichnung der Optionen
+    switch(option) {
+      case 'long':
+      case '> DH':
+      case '> IR':
+      case '> VA':
+      case '> preDH':
+        doc.setTextColor(0, 128, 0); // Grün für Long
+        break;
+      case 'short':
+      case '< DL':
+      case '< IR':
+      case '< VA':
+      case '< preDL':
+        doc.setTextColor(255, 0, 0); // Rot für Short
+        break;
+      case 'range':
+        doc.setTextColor(255, 165, 0); // Orange für Range
+        break;
+      case 'Keine':
+      case 'Beides/Keine':
+      case 'kein Preday Fakeout':
+      case 'inside Preday':
+        doc.setTextColor(128); // Grau für keine Auswahl
+        break;
+      default:
+        doc.setTextColor(128); // Grau für nicht ausgewählt
+    }
+    doc.text(option, 120, yPos);
+    yPos += 10;
+  });
+
+  // Prozentsätze
+  yPos += 10;
+  doc.setFontSize(14);
+  doc.setTextColor(0); // Schwarz für Überschriften
+  doc.setFont(undefined, 'bold');
+  doc.text("Auswertung:", 20, yPos);
+  doc.setFont(undefined, 'normal');
+  yPos += 10;
+  doc.setFontSize(12);
+
+  // Long Prozentsatz
+  doc.setTextColor(0, 128, 0);
+  doc.text(`Long: ${longPercentageElem.textContent}`, 25, yPos);
+  yPos += 10;
+
+  // Short Prozentsatz
+  doc.setTextColor(255, 0, 0);
+  doc.text(`Short: ${shortPercentageElem.textContent}`, 25, yPos);
+  yPos += 10;
+
+  // Range Prozentsatz
+  doc.setTextColor(255, 165, 0);
+  doc.text(`Range: ${rangePercentageElem.textContent}`, 25, yPos);
+  yPos += 20;
+
+  // Handlungsempfehlung
+  doc.setFontSize(14);
+  doc.setTextColor(0); // Schwarz für Überschriften
+  doc.setFont(undefined, 'bold');
+  doc.text("Handlungsempfehlung:", 20, yPos);
+  doc.setFont(undefined, 'normal');
+  yPos += 10;
+  doc.setFontSize(12);
+
+  const longPercentage = parseInt(longPercentageElem.textContent.match(/\d+/)[0]);
+  const shortPercentage = parseInt(shortPercentageElem.textContent.match(/\d+/)[0]);
+  const rangePercentage = parseInt(rangePercentageElem.textContent.match(/\d+/)[0]);
+
+  let recommendation = "";
+  let recommendationColor = "";
+  if (longPercentage > shortPercentage && longPercentage > rangePercentage) {
+    doc.setTextColor(0, 128, 0); // Grün für Long-Empfehlung
+    recommendation = "Long-Position empfohlen";
+    recommendationColor = "Long";
+  } else if (shortPercentage > longPercentage && shortPercentage > rangePercentage) {
+    doc.setTextColor(255, 0, 0); // Rot für Short-Empfehlung
+    recommendation = "Short-Position empfohlen";
+    recommendationColor = "Short";
+  } else if (rangePercentage >= longPercentage && rangePercentage >= shortPercentage) {
+    doc.setTextColor(255, 165, 0); // Orange für Range-Empfehlung
+    recommendation = "Seitwärtsbewegung erwartet, keine klare Positionierung empfohlen";
+    recommendationColor = "Range";
+  } else {
+    doc.setTextColor(0); // Schwarz für keine klare Empfehlung
+    recommendation = "Keine klare Empfehlung möglich, weitere Analyse erforderlich";
+    recommendationColor = "Neutral";
+  }
+
+  doc.text(recommendation, 25, yPos);
+  yPos += 20;
+
+  // Bestimmen des höchsten Prozentsatzes
+  const highestPercentage = Math.max(longPercentage, shortPercentage, rangePercentage);
+
+  // Generieren des Dateinamens
+  const fileName = `DailyBIAS_${weekday}_${currentDate.getDate()}_${currentDate.getMonth()+1}_${currentDate.getFullYear().toString().slice(-2)}_${recommendationColor}_${highestPercentage}%.pdf`;
+
+  // PDF speichern
+  doc.save(fileName);
+}
+
+  // Bestimmen des höchsten Prozentsatzes
+  const highestPercentage = Math.max(longPercentage, shortPercentage, rangePercentage);
+
+  // Generieren des Dateinamens
+  const fileName = `DailyBIAS_${weekday}_${currentDate.getDate()}_${currentDate.getMonth()+1}_${currentDate.getFullYear().toString().slice(-2)}_${recommendationColor}_${highestPercentage}%.pdf`;
+
+  // PDF speichern
+  doc.save(fileName);
+}
+    
+    // Event-Listener für den Drucken-Button
+      document.getElementById('printButton').addEventListener('click', generatePDF);
 
       // Funktion zum Aktualisieren der Auswahl basierend auf Button-Klicks
       function updateSelection(value) {
@@ -213,47 +542,47 @@
         rangePercentageElem.textContent = `${rangePercentage}%`;
       }
               
+      // Aktualisierte updatePercentage Funktion
       function updatePercentage() {
-  let longCount = 0;
-  let shortCount = 0;
-  let rangeCount = 0;
-  let totalSelectedCount = 0;
+        let longCount = 0;
+        let shortCount = 0;
+        let rangeCount = 0;
+        let totalSelectedCount = 0;
 
-  selects.forEach(select => {
-    const value = select.value;
-    if (value !== "") {  // Nur ausgewählte Optionen zählen
-      totalSelectedCount++;
-      switch (value) {
-        case 'long':
-        case '> DH':
-        case '> IR':
-        case '> VA':
-        case '> preDH':
-          longCount++;
-          break;
-        case 'short':
-        case '< DL':
-        case '< IR':
-        case '< VA':
-        case '< preDL':
-          shortCount++;
-          break;
-        case 'range':
-          rangeCount++;
-          break;
+        selects.forEach(select => {
+          const value = select.value;
+          if (value !== "") {
+            totalSelectedCount++;
+            switch (value) {
+              case 'long':
+              case '> DH':
+              case '> IR':
+              case '> VA':
+              case '> preDH':
+                longCount++;
+                break;
+              case 'short':
+              case '< DL':
+              case '< IR':
+              case '< VA':
+              case '< preDL':
+                shortCount++;
+                break;
+              case 'range':
+                rangeCount++;
+                break;
+            }
+          }
+        });
+
+        const longPercentage = totalSelectedCount > 0 ? ((longCount / totalSelectedCount) * 100).toFixed() : 0;
+        const shortPercentage = totalSelectedCount > 0 ? ((shortCount / totalSelectedCount) * 100).toFixed() : 0;
+        const rangePercentage = totalSelectedCount > 0 ? ((rangeCount / totalSelectedCount) * 100).toFixed() : 0;
+
+        longPercentageElem.textContent = `Long: ${longPercentage}%`;
+        shortPercentageElem.textContent = `Short: ${shortPercentage}%`;
+        rangePercentageElem.textContent = `Range: ${rangePercentage}%`;
       }
-    }
-  });
-
-  // Berechnung und Anzeige der Prozentsätze
-  const longPercentage = totalSelectedCount > 0 ? ((longCount / totalSelectedCount) * 100).toFixed() : 0;
-  const shortPercentage = totalSelectedCount > 0 ? ((shortCount / totalSelectedCount) * 100).toFixed() : 0;
-  const rangePercentage = totalSelectedCount > 0 ? ((rangeCount / totalSelectedCount) * 100).toFixed() : 0;
-
-  longPercentageElem.textContent = `Long: ${longPercentage}%`;
-  shortPercentageElem.textContent = `Short: ${shortPercentage}%`;
-  rangePercentageElem.textContent = `Range: ${rangePercentage}%`;
-}
 
       // Event-Listener für Button-Klicks
       const buttons = document.querySelectorAll('.button-container button');
@@ -280,7 +609,15 @@
 </head>
 <body>
   <div class="container">
-    <h1>Daily BIAS</h1>
+      <div class="header-container">
+    <!-- Titel -->
+    <div class="title">Daily BIAS</div>
+    <!-- Neuer Drucken-Button mit Drucker-Emoji -->
+    <button id="printButton">
+      🖨️ PDF Drucken
+    </button>
+  </div>
+    
     
     <!-- Neue Tabelle mit Indikatoren und Auswahlmöglichkeiten -->
     <table>
@@ -448,7 +785,7 @@
       </tbody>
     </table>
 
-    <!-- Container für Buttons und Prozentanzeigen -->
+<!-- Container für Buttons und Prozentanzeigen -->
     <div class="button-container">
       <button data-value="long" style="background-color:#C2FFC2; border: 2px solid #008000; border-radius: 5px;">Long</button>
       <div class="percentage-container">
@@ -467,6 +804,7 @@
 
       <button data-value="clear" style="border: 2px solid #ccc; border-radius: 5px;">Clear</button>
     </div>
+          <div>
   </div>
 </body>
 </html>
