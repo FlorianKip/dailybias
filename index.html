@@ -685,7 +685,21 @@ function generatePDF() {
           </td>
         </tr>
         <tr>
-          <td>DH/DL (heute)</td>
+          <td>Preday</td>
+          <td>
+            <select>
+              <option value="">Wählen Sie...</option>
+              <option value="long">Long</option>
+              <option value="short">Short</option>
+              <option value="range">Range</option>
+            </select>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>Price <> Intraday DH/DL</td>
           <td>
             <select>
               <option value="">Wählen Sie...</option>
@@ -699,7 +713,7 @@ function generatePDF() {
           </td>
         </tr>
         <tr>
-          <td>DH/DL (Vortrag)</td>
+          <td>Price <> Preday DH/DL</td>
           <td>
             <select>
               <option value="">Wählen Sie...</option>
@@ -713,7 +727,7 @@ function generatePDF() {
           </td>
         </tr>
         <tr>
-          <td>Preday Fakeout? (MP/M15)</td>
+          <td>Fakeout? Intraday (MP)</td>
           <td>
             <select>
               <option value="">Wählen Sie...</option>
@@ -727,7 +741,22 @@ function generatePDF() {
           </td>
         </tr>
         <tr>
-          <td>MP: Single Print (Heute)</td>
+        <tr>
+          <td>Fakeout? Preday (MP)</td>
+          <td>
+            <select>
+              <option value="">Wählen Sie...</option>
+              <option value="long">Fakeout preDL</option>
+              <option value="short">Fakeout preDH</option>
+              <option value="">kein Preday Fakeout</option>
+            </select>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>Single Print Intraday (MP)</td>
           <td>
             <select>
               <option value="">Wählen Sie...</option>
@@ -741,7 +770,7 @@ function generatePDF() {
           </td>
         </tr>
         <tr>
-          <td>MP: Single Print (Vortag)</td>
+          <td>Single Print Preday (MP)</td>
           <td>
             <select>
               <option value="">Wählen Sie...</option>
@@ -755,7 +784,7 @@ function generatePDF() {
           </td>
         </tr>
         <tr>
-          <td>MP: Tail (Heute)</td>
+          <td>Tail Intraday (MP)</td>
           <td>
             <select>
               <option value="">Wählen Sie...</option>
@@ -769,7 +798,21 @@ function generatePDF() {
           </td>
         </tr>
         <tr>
-          <td>MP: Tail (Vortag)</td>
+          <td>Tail Preday (MP)</td>
+          <td>
+            <select>
+              <option value="">Wählen Sie...</option>
+              <option value="long">Buying Tail</option>
+              <option value="short">Selling Tail</option>
+              <option value="">Beides/Keine</option>
+            </select>               
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>Schwache Hochs/Tiefs Intraday (MP)</td>
           <td>
             <select>
               <option value="">Wählen Sie...</option>
