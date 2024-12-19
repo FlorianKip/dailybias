@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <th>Status</th>
         </tr>
       </thead>
-      <tbody>
+ <tbody>
 <tr>
   <td>Price Action</td>
   <td>
@@ -627,27 +627,26 @@ document.addEventListener('DOMContentLoaded', () => {
     <span class="color-indicator"></span>
   </td>
 </tr>
-
-<tr>
-  <td>Price -&gt; Initial Range</td>
+                             <tr>
+  <td>Starke Liquiditäten</td>
   <td>
     <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; IR</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; IR</button>
+      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
+      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
     </div>
   </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
 
-<tr>
-  <td>Price -&gt; Value Area</td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+              
+                              <tr>
+  <td>Intraday Value Area</td>
   <td>
     <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VA</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VA</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">in VA</button>
+      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; preday VA</button>
+      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; preday VA</button>
     </div>
   </td>
   <td>
@@ -668,6 +667,62 @@ document.addEventListener('DOMContentLoaded', () => {
     <span class="color-indicator"></span>
   </td>
 </tr>
+
+<tr>
+  <td>Price -&gt; Initial Range</td>
+  <td>
+    <div style="display: flex; gap: 10px;">
+      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; IR</button>
+      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; IR</button>
+    </div>
+  </td>
+  <td>
+    <span class="color-indicator"></span>
+  </td>
+</tr>
+
+        <tr>
+  <td>Price -&gt; VWAP</td>
+  <td>
+    <div style="display: flex; gap: 10px;">
+      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VWAP</button>
+      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VWAP</button>
+    </div>
+  </td>
+  <td>
+    <span class="color-indicator"></span>
+  </td>
+</tr>
+
+<tr>
+  <td>Price -&gt; Intraday VA</td>
+  <td>
+    <div style="display: flex; gap: 10px;">
+      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VA</button>
+      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VA</button>
+      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">in VA</button>
+    </div>
+  </td>
+  <td>
+    <span class="color-indicator"></span>
+  </td>
+</tr>
+
+        <tr>
+  <td>Price -&gt; Preday VA</td>
+  <td>
+    <div style="display: flex; gap: 10px;">
+      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VA</button>
+      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VA</button>
+      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">in VA</button>
+    </div>
+  </td>
+  <td>
+    <span class="color-indicator"></span>
+  </td>
+</tr>
+
+
 
 <tr>
   <td>Price &lt;&gt; Intraday DH/DL</td>
@@ -781,6 +836,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="color-indicator"></span>
           </td>
         </tr>
+
       </tbody>
     </table>
 
