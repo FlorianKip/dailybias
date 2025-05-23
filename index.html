@@ -6,49 +6,47 @@
   <title>Daily BIAS</title>
   <!-- Einbindung der Roboto-Schriftart von Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Einbindung der jsPDF-Bibliothek -->
+  <!-- Einbindung der jsPDF-Bibliothek -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- jsPDF Bibliothek -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  
   <!-- Chart.js Bibliothek -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-      .btn {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
+  <style>
+    .btn {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
 
-  .btn:hover {
-    background-color: #e0e0e0;
-  }
+    .btn:hover {
+      background-color: #e0e0e0;
+    }
 
-  .btn.active[data-value="long"] {
-    background-color: green;
-    color: #fff;
-  }
+    .btn.active[data-value="long"] {
+      background-color: green;
+      color: #fff;
+    }
 
-  .btn.active[data-value="short"] {
-    background-color: red;
-    color: #fff;
-  }
+    .btn.active[data-value="short"] {
+      background-color: red;
+      color: #fff;
+    }
 
-  .btn.active[data-value="range"] {
-    background-color: #ffd700;;
-    color: #000;
-  }
+    .btn.active[data-value="range"] {
+      background-color: #ffd700;
+      color: #000;
+    }
 
-  .color-indicator {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-  }
+    .color-indicator {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+    }
+
     /* Grundlegende Seitengestaltung */
     body {
       display: flex;
@@ -60,7 +58,7 @@
       background-color: #f2f2f2;
       color: #333;
     }
-    
+
     /* Container für den Hauptinhalt */
     .container {
       background-color: #fff;
@@ -70,7 +68,7 @@
       max-width: 800px;
       width: 90%;
     }
-    
+
     /* Überschrift-Styling */
     h1 {
       text-align: center;
@@ -78,29 +76,29 @@
       margin-bottom: 30px;
       font-weight: 700;
     }
-    
+
     /* Tabellen-Styling */
     table {
       width: 100%;
       border-collapse: collapse;
     }
-    
+
     th, td {
       padding: 10px;
       text-align: left;
       border-bottom: 1px solid #ddd;
     }
-    
+
     th {
       background-color: #f2f2f2;
       font-weight: 700;
       color: #005a9e;
     }
-    
+
     tr:hover {
       background-color: #f2f2f2;
     }
-    
+
     /* Dropdown-Menü-Styling */
     select {
       width: 100%;
@@ -111,12 +109,12 @@
       background-color: #f2f2f2;
       color: #333;
     }
-    
+
     select:focus {
       outline: none;
       border-color: #005a9e;
     }
-    
+
     /* Farbindikator-Styling */
     .color-indicator {
       width: 16px;
@@ -126,14 +124,14 @@
       margin-right: 8px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     }
-    
+
     /* Button-Container-Styling */
     .button-container {
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
     }
-    
+
     .button-container button {
       padding: 10px 20px;
       border: none;
@@ -141,13 +139,13 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-    
+
     .button-container button:hover {
       background-color: #005a9e;
       color: white;
     }
-    
-        /* Container für Titel und Drucken-Button */
+
+    /* Container für Titel und Drucken-Button */
     .header-container {
       display: flex;
       justify-content: space-between;
@@ -161,16 +159,16 @@
       font-weight: bold;
       color: #005a9e;
     }
-      
-          .title {
+
+    .title {
       font-size: 24px;
       font-weight: bold;
       color: #005a9e;
       display: flex;
       align-items: center;
     }
-      
-          .pie-chart {
+
+    .pie-chart {
       margin-left: 20px;
     }
 
@@ -192,7 +190,7 @@
     }
   </style>
   <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
       const ctx = document.getElementById('myPieChart').getContext('2d');
       const myPieChart = new Chart(ctx, {
         type: 'pie',
@@ -214,179 +212,167 @@
         }
       });
     });
-    
+
     document.addEventListener('DOMContentLoaded', () => {
       // Selektieren aller relevanten Elemente
       const selects = document.querySelectorAll('select');
       const longPercentageElem = document.getElementById('long-percentage');
       const shortPercentageElem = document.getElementById('short-percentage');
       const rangePercentageElem = document.getElementById('range-percentage');
-    
-          function generatePDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
 
-  // Aktuelles Datum mit Wochentag und Kalenderwoche
-  const currentDate = new Date();
-  const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-  const weekday = weekdays[currentDate.getDay()];
+      function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-  // Funktion zur Berechnung der Kalenderwoche
-  function getWeekNumber(d) {
-    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1) / 7);
-    return weekNo;
-  }
+        // Aktuelles Datum mit Wochentag und Kalenderwoche
+        const currentDate = new Date();
+        const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+        const weekday = weekdays[currentDate.getDay()];
 
-  const kw = getWeekNumber(currentDate);
-
-  // Formatierte Zeit
-  const formattedDate = `${weekday}, ${String(currentDate.getDate()).padStart(2, '0')}.${String(currentDate.getMonth() + 1).padStart(2, '0')}.${String(currentDate.getFullYear()).slice(-2)} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')} (KW${kw})`;
-
-  // Titel und Informationen
-  doc.setFontSize(18);
-  doc.setTextColor(0, 102, 204); // Blau für den Titel
-  doc.text("Daily BIAS Auswertung", 20, 20);
-  doc.setFontSize(12);
-  doc.setTextColor(0); // Schwarz für die zusätzlichen Informationen
-  doc.text(formattedDate, 190, 20, null, null, "right");
-
-  // Indikatoren und Bewertung
-  doc.setFontSize(14);
-  doc.setTextColor(0); // Schwarz für Überschriften
-  doc.setFont(undefined, 'bold');
-  doc.text("Indikatoren und Bewertung:", 20, 40);
-  doc.setFont(undefined, 'normal');
-
-  let yPos = 50;
-const buttons = document.querySelectorAll('.btn'); // Alle Buttons mit der Klasse 'btn' auswählen
-
-buttons.forEach((button, index) => {
-    if (button.classList.contains('active')) { // Nur den aktiven Button einlesen
-        const row = button.closest('tr'); // Finde die Zeile, die den Button enthält
-        const indicator = row.querySelector('td:first-child').textContent; // Text des ersten td (Indikator)
-        const buttonValue = button.dataset.value || "Nicht ausgewählt"; // Wert des Buttons oder "Nicht ausgewählt"
-        const buttonContent = button.textContent.trim(); // Text des Buttons (Inhalt)
-
-        // Bestimmen der Farbe basierend auf dem Button-Wert
-        let buttonValueColor = 'black'; // Standardfarbe für unbekannte Werte
-        if (buttonValue.toLowerCase() === 'long') {
-            buttonValueColor = 'green'; // Grün für "long"
-        } else if (buttonValue.toLowerCase() === 'short') {
-            buttonValueColor = 'red'; // Rot für "short"
-        } else if (buttonValue.toLowerCase() === 'range') {
-            buttonValueColor = 'orange'; // Orange für "range"
+        // Funktion zur Berechnung der Kalenderwoche
+        function getWeekNumber(d) {
+          d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+          d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+          const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+          const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+          return weekNo;
         }
 
-        // Text in der PDF ausgeben
+        const kw = getWeekNumber(currentDate);
+
+        // Formatierte Zeit
+        const formattedDate = `${weekday}, ${String(currentDate.getDate()).padStart(2, '0')}.${String(currentDate.getMonth() + 1).padStart(2, '0')}.${String(currentDate.getFullYear()).slice(-2)} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')} (KW${kw})`;
+
+        // Titel und Informationen
+        doc.setFontSize(18);
+        doc.setTextColor(0, 102, 204); // Blau für den Titel
+        doc.text("Daily BIAS Auswertung", 20, 20);
         doc.setFontSize(12);
-        doc.setTextColor(0); // Schwarz für den Indikator
-        doc.text(`${indicator}: ${buttonContent}`, 25, yPos); // Indikator und Button-Inhalt
-        doc.setTextColor(buttonValueColor); // Setze die Farbe für den Button-Wert
-        doc.text(`${buttonValue.toUpperCase()}`, 120, yPos); // Button-Wert mit der entsprechenden Farbe ausgeben
-        yPos += 10; // Zeilenabstand
-    }
-});
+        doc.setTextColor(0); // Schwarz für die zusätzlichen Informationen
+        doc.text(formattedDate, 190, 20, null, null, "right");
 
+        // Indikatoren und Bewertung
+        doc.setFontSize(14);
+        doc.setTextColor(0); // Schwarz für Überschriften
+        doc.setFont(undefined, 'bold');
+        doc.text("Indikatoren und Bewertung:", 20, 40);
+        doc.setFont(undefined, 'normal');
 
-  // Prozentsätze
-  yPos += 10;
-  doc.setFontSize(14);
-  doc.setTextColor(0); // Schwarz für Überschriften
-  doc.setFont(undefined, 'bold');
-  doc.text("Auswertung:", 20, yPos);
-  doc.setFont(undefined, 'normal');
-  yPos += 10;
-  doc.setFontSize(12);
+        let yPos = 50;
+        const buttons = document.querySelectorAll('.btn'); // Alle Buttons mit der Klasse 'btn' auswählen
 
-  // Long Prozentsatz
-  doc.setTextColor(0, 128, 0);
-  doc.text(`${longPercentageElem.textContent}`, 25, yPos);
-  yPos += 10;
+        buttons.forEach((button, index) => {
+          if (button.classList.contains('active')) { // Nur den aktiven Button einlesen
+            const row = button.closest('tr'); // Finde die Zeile, die den Button enthält
+            const indicator = row.querySelector('td:first-child').textContent; // Text des ersten td (Indikator)
+            const buttonValue = button.dataset.value || "Nicht ausgewählt"; // Wert des Buttons oder "Nicht ausgewählt"
+            const buttonContent = button.textContent.trim(); // Text des Buttons (Inhalt)
 
-  // Short Prozentsatz
-  doc.setTextColor(255, 0, 0);
-  doc.text(`${shortPercentageElem.textContent}`, 25, yPos);
-  yPos += 10;
+            // Bestimmen der Farbe basierend auf dem Button-Wert
+            let buttonValueColor = 'black'; // Standardfarbe für unbekannte Werte
+            if (buttonValue.toLowerCase() === 'long') {
+              buttonValueColor = 'green'; // Grün für "long"
+            } else if (buttonValue.toLowerCase() === 'short') {
+              buttonValueColor = 'red'; // Rot für "short"
+            } else if (buttonValue.toLowerCase() === 'range') {
+              buttonValueColor = 'orange'; // Orange für "range"
+            }
 
-  // Range Prozentsatz
-  doc.setTextColor(255, 165, 0);
-  doc.text(`${rangePercentageElem.textContent}`, 25, yPos);
-  yPos += 20;
-  
-    
+            // Text in der PDF ausgeben
+            doc.setFontSize(12);
+            doc.setTextColor(0); // Schwarz für den Indikator
+            doc.text(`${indicator}: ${buttonContent}`, 25, yPos); // Indikator und Button-Inhalt
+            doc.setTextColor(buttonValueColor); // Setze die Farbe für den Button-Wert
+            doc.text(`${buttonValue.toUpperCase()}`, 120, yPos); // Button-Wert mit der entsprechenden Farbe ausgeben
+            yPos += 10; // Zeilenabstand
+          }
+        });
 
-  // Handlungsempfehlung
-  doc.setFontSize(14);
-  doc.setTextColor(0); // Schwarz für Überschriften
-  doc.setFont(undefined, 'bold');
-  doc.text("Handlungsempfehlung:", 20, yPos);
-  doc.setFont(undefined, 'normal');
-  yPos += 10;
-  doc.setFontSize(12);
+        // Prozentsätze
+        yPos += 10;
+        doc.setFontSize(14);
+        doc.setTextColor(0); // Schwarz für Überschriften
+        doc.setFont(undefined, 'bold');
+        doc.text("Auswertung:", 20, yPos);
+        doc.setFont(undefined, 'normal');
+        yPos += 10;
+        doc.setFontSize(12);
 
-  const longPercentage = parseInt(longPercentageElem.textContent.match(/\d+/)[0]);
-  const shortPercentage = parseInt(shortPercentageElem.textContent.match(/\d+/)[0]);
-  const rangePercentage = parseInt(rangePercentageElem.textContent.match(/\d+/)[0]);
+        // Long Prozentsatz
+        doc.setTextColor(0, 128, 0);
+        doc.text(`${longPercentageElem.textContent}`, 25, yPos);
+        yPos += 10;
 
-  let recommendation = "";
-  let recommendationColor = "";
-  if (longPercentage > shortPercentage && longPercentage > rangePercentage) {
-    doc.setTextColor(0, 128, 0); // Grün für Long-Empfehlung
-    recommendation = "Long-Position empfohlen";
-    recommendationColor = "Long";
-  } else if (shortPercentage > longPercentage && shortPercentage > rangePercentage) {
-    doc.setTextColor(255, 0, 0); // Rot für Short-Empfehlung
-    recommendation = "Short-Position empfohlen";
-    recommendationColor = "Short";
-  } else if (rangePercentage >= longPercentage && rangePercentage >= shortPercentage) {
-    doc.setTextColor(255, 165, 0); // Orange für Range-Empfehlung
-    recommendation = "Seitwärtsbewegung erwartet, keine klare Positionierung empfohlen";
-    recommendationColor = "Range";
-  } else {
-    doc.setTextColor(0); // Schwarz für keine klare Empfehlung
-    recommendation = "Keine klare Empfehlung möglich, weitere Analyse erforderlich";
-    recommendationColor = "Neutral";
-  }
+        // Short Prozentsatz
+        doc.setTextColor(255, 0, 0);
+        doc.text(`${shortPercentageElem.textContent}`, 25, yPos);
+        yPos += 10;
 
-  doc.text(recommendation, 25, yPos);
-  yPos += 20;
+        // Range Prozentsatz
+        doc.setTextColor(255, 165, 0);
+        doc.text(`${rangePercentageElem.textContent}`, 25, yPos);
+        yPos += 20;
 
-  // Bestimmen des höchsten Prozentsatzes
-  const highestPercentage = Math.max(longPercentage, shortPercentage, rangePercentage);
+        // Handlungsempfehlung
+        doc.setFontSize(14);
+        doc.setTextColor(0); // Schwarz für Überschriften
+        doc.setFont(undefined, 'bold');
+        doc.text("Handlungsempfehlung:", 20, yPos);
+        doc.setFont(undefined, 'normal');
+        yPos += 10;
+        doc.setFontSize(12);
 
-  // Generieren des Dateinamens
-  const fileName = `DailyBIAS_${weekday}_${currentDate.getDate()}_${currentDate.getMonth()+1}_${currentDate.getFullYear().toString().slice(-2)}_${recommendationColor}_${highestPercentage}%.pdf`;
+        const longPercentage = parseInt(longPercentageElem.textContent.match(/\d+/)[0]);
+        const shortPercentage = parseInt(shortPercentageElem.textContent.match(/\d+/)[0]);
+        const rangePercentage = parseInt(rangePercentageElem.textContent.match(/\d+/)[0]);
 
-  // PDF speichern
-  doc.save(fileName);
-}
-    
-    // Event-Listener für den Drucken-Button
+        let recommendation = "";
+        let recommendationColor = "";
+        if (longPercentage > shortPercentage && longPercentage > rangePercentage) {
+          doc.setTextColor(0, 128, 0); // Grün für Long-Empfehlung
+          recommendation = "Long-Position empfohlen";
+          recommendationColor = "Long";
+        } else if (shortPercentage > longPercentage && shortPercentage > rangePercentage) {
+          doc.setTextColor(255, 0, 0); // Rot für Short-Empfehlung
+          recommendation = "Short-Position empfohlen";
+          recommendationColor = "Short";
+        } else if (rangePercentage >= longPercentage && rangePercentage >= shortPercentage) {
+          doc.setTextColor(255, 165, 0); // Orange für Range-Empfehlung
+          recommendation = "Seitwärtsbewegung erwartet, keine klare Positionierung empfohlen";
+          recommendationColor = "Range";
+        } else {
+          doc.setTextColor(0); // Schwarz für keine klare Empfehlung
+          recommendation = "Keine klare Empfehlung möglich, weitere Analyse erforderlich";
+          recommendationColor = "Neutral";
+        }
+
+        doc.text(recommendation, 25, yPos);
+        yPos += 20;
+
+        // Bestimmen des höchsten Prozentsatzes
+        const highestPercentage = Math.max(longPercentage, shortPercentage, rangePercentage);
+
+        // Generieren des Dateinamens
+        const fileName = `DailyBIAS_${weekday}_${currentDate.getDate()}_${currentDate.getMonth() + 1}_${currentDate.getFullYear().toString().slice(-2)}_${recommendationColor}_${highestPercentage}%.pdf`;
+
+        // PDF speichern
+        doc.save(fileName);
+      }
+
+      // Event-Listener für den Drucken-Button
       document.getElementById('printButton').addEventListener('click', generatePDF);
 
       // Funktion zum Aktualisieren der Auswahl basierend auf Button-Klicks
       function updateSelection(value) {
-        selects.forEach(select => {
-          switch (value) {
-            case 'long':
-              select.value = (select.querySelector('option[value="long"]') ? 'long' : '> DH');
-              break;
-            case 'short':
-              select.value = (select.querySelector('option[value="short"]') ? 'short' : '< DL');
-              break;
-            case 'range':
-              select.value = 'range';
-              break;
-            case 'clear':
-              select.value = '';
-              break;
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+          button.classList.remove('active');
+          if (button.dataset.value === value) {
+            button.classList.add('active');
           }
         });
         updateColor();
-        updatePercentage();
+        calculateButtonPercentages();
       }
 
       // Funktion zum Aktualisieren der Farbindikatoren und des Hintergrunds
@@ -398,16 +384,14 @@ buttons.forEach((button, index) => {
         const body = document.querySelector('body');
 
         indicators.forEach(indicator => {
-          const value = indicator.parentElement.previousElementSibling.querySelector('td select').value;
+          const value = indicator.parentElement.previousElementSibling.querySelector('td .btn.active')?.dataset.value;
           const colorIndicator = indicator;
           switch (value) {
             case 'long':
-            case '> DH':
               colorIndicator.style.backgroundColor = '#008000';
               greenCount++;
               break;
             case 'short':
-            case '< DL':
               colorIndicator.style.backgroundColor = '#ff0000';
               redCount++;
               break;
@@ -433,59 +417,59 @@ buttons.forEach((button, index) => {
         }
       }
 
-              
       // Aktualisierte updatePercentage Funktion
-function calculateButtonPercentages() {
-    // Alle aktiven Buttons zählen
-    const activeButtons = document.querySelectorAll('.btn.active');
-    const totalActive = activeButtons.length;
-    
-    // Zähler für jeden Typ
-    let longCount = 0;
-    let shortCount = 0;
-    let rangeCount = 0;
+      function calculateButtonPercentages() {
+        // Alle aktiven Buttons zählen
+        const activeButtons = document.querySelectorAll('.btn.active');
+        const totalActive = activeButtons.length;
 
-    // Jeden aktiven Button prüfen und zählen
-    activeButtons.forEach(button => {
-        const value = button.getAttribute('data-value');
-        switch (value) {
+        // Zähler für jeden Typ
+        let longCount = 0;
+        let shortCount = 0;
+        let rangeCount = 0;
+
+        // Jeden aktiven Button prüfen und zählen
+        activeButtons.forEach(button => {
+          const value = button.getAttribute('data-value');
+          switch (value) {
             case 'long':
-                longCount++;
-                break;
+              longCount++;
+              break;
             case 'short':
-                shortCount++;
-                break;
+              shortCount++;
+              break;
             case 'range':
-                rangeCount++;
-                break;
-        }
-    });
+              rangeCount++;
+              break;
+          }
+        });
 
-    // Prozente berechnen (auf ganze Zahlen gerundet)
-    const longPercentage = totalActive > 0 ? Math.round((longCount / totalActive) * 100) : 0;
-    const shortPercentage = totalActive > 0 ? Math.round((shortCount / totalActive) * 100) : 0;
-    const rangePercentage = totalActive > 0 ? Math.round((rangeCount / totalActive) * 100) : 0;
+        // Prozente berechnen (auf ganze Zahlen gerundet)
+        const longPercentage = totalActive > 0 ? Math.round((longCount / totalActive) * 100) : 0;
+        const shortPercentage = totalActive > 0 ? Math.round((shortCount / totalActive) * 100) : 0;
+        const rangePercentage = totalActive > 0 ? Math.round((rangeCount / totalActive) * 100) : 0;
 
-    // Ergebnisse in den entsprechenden Elementen anzeigen
-    document.getElementById('long-percentage').textContent = `Long: ${longPercentage}%`;
-    document.getElementById('short-percentage').textContent = `Short: ${shortPercentage}%`;
-    document.getElementById('range-percentage').textContent = `Range: ${rangePercentage}%`;
-}
+        // Ergebnisse in den entsprechenden Elementen anzeigen
+        document.getElementById('long-percentage').textContent = `Long: ${longPercentage}%`;
+        document.getElementById('short-percentage').textContent = `Short: ${shortPercentage}%`;
+        document.getElementById('range-percentage').textContent = `Range: ${rangePercentage}%`;
+      }
 
-// Event-Listener für alle Buttons hinzufügen
-document.querySelectorAll('.btn').forEach(button => {
-    button.addEventListener('click', function() {
-        // Alle Buttons in derselben Gruppe deaktivieren
-        const buttonGroup = this.parentElement.querySelectorAll('.btn');
-        buttonGroup.forEach(btn => btn.classList.remove('active'));
-        
-        // Angeklickten Button aktivieren
-        this.classList.add('active');
-        
-        // Prozente neu berechnen und anzeigen
-        calculateButtonPercentages();
-    });
-});
+      // Event-Listener für alle Buttons hinzufügen
+      document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('click', function() {
+          // Alle Buttons in derselben Gruppe deaktivieren
+          const buttonGroup = this.parentElement.querySelectorAll('.btn');
+          buttonGroup.forEach(btn => btn.classList.remove('active'));
+
+          // Angeklickten Button aktivieren
+          this.classList.add('active');
+
+          // Prozente neu berechnen und anzeigen
+          calculateButtonPercentages();
+        });
+      });
+
       // Event-Listener für Button-Klicks
       const buttons = document.querySelectorAll('.button-container button');
       buttons.forEach(button => {
@@ -497,125 +481,126 @@ document.querySelectorAll('.btn').forEach(button => {
 
       // Initiale Farb- und Prozentsatzaktualisierung
       updateColor();
-      updatePercentage();
+      calculateButtonPercentages();
 
       // Event-Listener für Änderungen in den Dropdown-Menüs
       selects.forEach(select => {
         select.addEventListener('change', () => {
           updateColor();
-          updatePercentage();
+          calculateButtonPercentages();
         });
       });
     });
-    
-     function setSelection(value, button) {
-    // Entferne die aktive Klasse von allen Buttons
-    const buttons = button.parentElement.querySelectorAll('.btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
 
-    // Füge die aktive Klasse zum ausgewählten Button hinzu
-    button.classList.add('active');
+    function setSelection(value, button) {
+      // Entferne die aktive Klasse von allen Buttons
+      const buttons = button.parentElement.querySelectorAll('.btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
 
-    // Aktualisiere die Farbanzeige basierend auf der Auswahl
-    const colorIndicator = button.closest('tr').querySelector('.color-indicator');
-    switch (value) {
-      case 'long':
-        colorIndicator.style.backgroundColor = 'green';
-        break;
-      case 'short':
-        colorIndicator.style.backgroundColor = 'red';
-        break;
-      case 'range':
-        colorIndicator.style.backgroundColor = 'yellow';
-        break;
-      default:
-        colorIndicator.style.backgroundColor = 'transparent';
+      // Füge die aktive Klasse zum ausgewählten Button hinzu
+      button.classList.add('active');
+
+      // Aktualisiere die Farbanzeige basierend auf der Auswahl
+      const colorIndicator = button.closest('tr').querySelector('.color-indicator');
+      switch (value) {
+        case 'long':
+          colorIndicator.style.backgroundColor = 'green';
+          break;
+        case 'short':
+          colorIndicator.style.backgroundColor = 'red';
+          break;
+        case 'range':
+          colorIndicator.style.backgroundColor = 'yellow';
+          break;
+        default:
+          colorIndicator.style.backgroundColor = 'transparent';
+      }
     }
-  }
-              
-function updateSelection(value) {
-  if (value === 'clear') {
-    // Alle Buttons zurücksetzen
-    const allButtons = document.querySelectorAll('.btn');
-    allButtons.forEach(button => {
-      button.classList.remove('active');
-    });
 
-    // Alle Farbindikatoren zurücksetzen
-    const indicators = document.querySelectorAll('.color-indicator');
-    indicators.forEach(indicator => {
-      indicator.style.backgroundColor = '#ccc';
-    });
+    function updateSelection(value) {
+      if (value === 'clear') {
+        // Alle Buttons zurücksetzen
+        const allButtons = document.querySelectorAll('.btn');
+        allButtons.forEach(button => {
+          button.classList.remove('active');
+        });
 
-    // Prozentanzeigen zurücksetzen
-    document.getElementById('long-percentage').textContent = 'Long: 0%';
-    document.getElementById('short-percentage').textContent = 'Short: 0%';
-    document.getElementById('range-percentage').textContent = 'Range: 0%';
+        // Alle Farbindikatoren zurücksetzen
+        const indicators = document.querySelectorAll('.color-indicator');
+        indicators.forEach(indicator => {
+          indicator.style.backgroundColor = '#ccc';
+        });
 
-    // Hintergrundfarbe zurücksetzen
-    document.querySelector('body').style.backgroundColor = '#f2f2f2';
-  }
-}
-document.addEventListener('DOMContentLoaded', () => {
-  // Bestehende Selektoren
-  const selects = document.querySelectorAll('select');
-  const longPercentageElem = document.getElementById('long-percentage');
-  const shortPercentageElem = document.getElementById('short-percentage');
-  const rangePercentageElem = document.getElementById('range-percentage');
+        // Prozentanzeigen zurücksetzen
+        document.getElementById('long-percentage').textContent = 'Long: 0%';
+        document.getElementById('short-percentage').textContent = 'Short: 0%';
+        document.getElementById('range-percentage').textContent = 'Range: 0%';
 
-  // Funktion zum Zurücksetzen der Prozentanzeigen
-  function resetPercentages() {
-    longPercentageElem.textContent = 'Long: 0%';
-    shortPercentageElem.textContent = 'Short: 0%';
-    rangePercentageElem.textContent = 'Range: 0%';
-  }
-
-  // Funktion zum Aktualisieren der Auswahl
-  function updateSelection(value) {
-    if (value === 'clear') {
-      // Alle aktiven Buttons finden und zurücksetzen
-      const allActiveButtons = document.querySelectorAll('.btn.active');
-      allActiveButtons.forEach(button => {
-        button.classList.remove('active');
-      });
-
-      // Alle Farbindikatoren zurücksetzen
-      const allColorIndicators = document.querySelectorAll('.color-indicator');
-      allColorIndicators.forEach(indicator => {
-        indicator.style.backgroundColor = 'transparent';
-      });
-
-      // Prozentanzeigen zurücksetzen
-      resetPercentages();
-
-      // Hintergrundfarbe zurücksetzen
-      document.body.style.backgroundColor = '#f2f2f2';
+        // Hintergrundfarbe zurücksetzen
+        document.querySelector('body').style.backgroundColor = '#f2f2f2';
+      }
     }
-  }
 
-  // Event-Listener für den Clear-Button
-  const clearButton = document.querySelector('button[data-value="clear"]');
-  if (clearButton) {
-    clearButton.addEventListener('click', function() {
-      updateSelection('clear');
-      resetPercentages(); // Expliziter Aufruf zum Zurücksetzen der Prozente
-    });
-  }
+    document.addEventListener('DOMContentLoaded', () => {
+      // Bestehende Selektoren
+      const selects = document.querySelectorAll('select');
+      const longPercentageElem = document.getElementById('long-percentage');
+      const shortPercentageElem = document.getElementById('short-percentage');
+      const rangePercentageElem = document.getElementById('range-percentage');
 
-  // Bestehende Event-Listener für andere Buttons beibehalten
-  const buttons = document.querySelectorAll('.button-container button');
-  buttons.forEach(button => {
-    button.addEventListener('click', function() {
-      const value = this.getAttribute('data-value');
-      updateSelection(value);
+      // Funktion zum Zurücksetzen der Prozentanzeigen
+      function resetPercentages() {
+        longPercentageElem.textContent = 'Long: 0%';
+        shortPercentageElem.textContent = 'Short: 0%';
+        rangePercentageElem.textContent = 'Range: 0%';
+      }
+
+      // Funktion zum Aktualisieren der Auswahl
+      function updateSelection(value) {
+        if (value === 'clear') {
+          // Alle aktiven Buttons finden und zurücksetzen
+          const allActiveButtons = document.querySelectorAll('.btn.active');
+          allActiveButtons.forEach(button => {
+            button.classList.remove('active');
+          });
+
+          // Alle Farbindikatoren zurücksetzen
+          const allColorIndicators = document.querySelectorAll('.color-indicator');
+          allColorIndicators.forEach(indicator => {
+            indicator.style.backgroundColor = 'transparent';
+          });
+
+          // Prozentanzeigen zurücksetzen
+          resetPercentages();
+
+          // Hintergrundfarbe zurücksetzen
+          document.body.style.backgroundColor = '#f2f2f2';
+        }
+      }
+
+      // Event-Listener für den Clear-Button
+      const clearButton = document.querySelector('button[data-value="clear"]');
+      if (clearButton) {
+        clearButton.addEventListener('click', function() {
+          updateSelection('clear');
+          resetPercentages(); // Expliziter Aufruf zum Zurücksetzen der Prozente
+        });
+      }
+
+      // Bestehende Event-Listener für andere Buttons beibehalten
+      const buttons = document.querySelectorAll('.button-container button');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          const value = this.getAttribute('data-value');
+          updateSelection(value);
+        });
+      });
     });
-  });
-});
   </script>
 </head>
 <body>
   <div class="container">
-         <div class="header-container">
+    <div class="header-container">
       <!-- Titel -->
       <div class="title">
         Daily BIAS
@@ -629,8 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
         🖨️ PDF Drucken
       </button>
     </div>
-    
-    
+
     <!-- Neue Tabelle mit Indikatoren und Auswahlmöglichkeiten -->
     <table>
       <thead>
@@ -640,231 +624,225 @@ document.addEventListener('DOMContentLoaded', () => {
           <th>Status</th>
         </tr>
       </thead>
- <tbody>
-<tr>
-  <td>Price Action</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Volume Profile</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-                             <tr>
-  <td>Starke Liquiditäten</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
-    </div>
-  </td>
-
+      <tbody>
+        <tr>
+          <td>Price Action</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
+            </div>
+          </td>
           <td>
             <span class="color-indicator"></span>
           </td>
         </tr>
-              
-                              <tr>
-  <td>Intraday Value Area</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; preday VA</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; preday VA</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">inside preday VA</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Preday</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Price -&gt; Initial Range</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; IR</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; IR</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
 
         <tr>
-  <td>Price -&gt; VWAP</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VWAP</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VWAP</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Price -&gt; Intraday VA</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VA</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VA</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">in VA</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-
-
-<tr>
-  <td>Price &lt;&gt; Intraday DH/DL</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; DH</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; DL</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Price &lt;&gt; Preday DH/DL</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; preDH</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; preDL</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">inside Preday</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Fakeout? Intraday (MP)</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Fakeout DL</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Fakeout DH</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Fakeout? Preday (MP)</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Fakeout preDL</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Fakeout preDH</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Single Print Intraday (MP)</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Single Print Preday (MP)</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
-    </div>
-  </td>
-  <td>
-    <span class="color-indicator"></span>
-  </td>
-</tr>
-
-<tr>
-  <td>Tail Intraday (MP)</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Buying Tail</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Selling Tail</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Beides/Keine</button>
-    </div>
-  </td>
-
+          <td>Volume Profile</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
+            </div>
+          </td>
           <td>
             <span class="color-indicator"></span>
           </td>
         </tr>
-       <tr>
-  <td>Tail Preday (MP)</td>
-  <td>
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Buying Tail</button>
-      <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Selling Tail</button>
-      <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Beides/Keine</button>
-    </div>
-  </td>
-
+        <tr>
+          <td>Starke Liquiditäten</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
+            </div>
+          </td>
           <td>
             <span class="color-indicator"></span>
           </td>
         </tr>
 
+        <tr>
+          <td>Intraday Value Area</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; preday VA</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; preday VA</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">inside preday VA</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Preday</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Price -&gt; Initial Range</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; IR</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; IR</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Price -&gt; VWAP</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VWAP</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VWAP</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Price -&gt; Intraday VA</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VA</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VA</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">in VA</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Price &lt;&gt; Intraday DH/DL</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; DH</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; DL</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Price &lt;&gt; Preday DH/DL</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; preDH</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; preDL</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">inside Preday</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Fakeout? Intraday (MP)</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Fakeout DL</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Fakeout DH</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Fakeout? Preday (MP)</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Fakeout preDL</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Fakeout preDH</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Single Print Intraday (MP)</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Single Print Preday (MP)</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Tail Intraday (MP)</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Buying Tail</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Selling Tail</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Beides/Keine</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
+        <tr>
+          <td>Tail Preday (MP)</td>
+          <td>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Buying Tail</button>
+              <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Selling Tail</button>
+              <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Beides/Keine</button>
+            </div>
+          </td>
+          <td>
+            <span class="color-indicator"></span>
+          </td>
+        </tr>
       </tbody>
     </table>
 
-<!-- Container für Buttons und Prozentanzeigen -->
+    <!-- Container für Buttons und Prozentanzeigen -->
     <div class="button-container">
       <button data-value="long" style="background-color:#C2FFC2; border: 2px solid #008000; border-radius: 5px;">Long</button>
       <div class="percentage-container">
@@ -883,7 +861,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <button data-value="clear" style="border: 2px solid #ccc; border-radius: 5px;">Clear</button>
     </div>
-          <div>
+    <div>
+    </div>
   </div>
 </body>
-</html> 
+</html>
