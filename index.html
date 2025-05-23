@@ -12,21 +12,19 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* Ihr bestehendes CSS */
-      /* Style for buttons with type="button", class="btn", and data-value="long" */
-  button.btn[data-value="long"] {
-    border: 1px solid #00c200;
-    border-radius: 15px;
-  }
-      button.btn[data-value="short"] {
-    border: 1px solid #ff8080;
-    border-radius: 15px;
-  }
-      button.btn[data-value="range"] {
-    border: 1px solid #ff8133;
-    border-radius: 15px;
-  }
-    
-    
+    button.btn[data-value="long"] {
+      border: 1px solid #00c200;
+      border-radius: 15px;
+    }
+    button.btn[data-value="short"] {
+      border: 1px solid #ff8080;
+      border-radius: 15px;
+    }
+    button.btn[data-value="range"] {
+      border: 1px solid #ff8133;
+      border-radius: 15px;
+    }
+
     .btn {
       padding: 10px 15px;
       border: 1px solid #ccc;
@@ -277,6 +275,7 @@
       const longPercentageElem = document.getElementById('long-percentage');
       const shortPercentageElem = document.getElementById('short-percentage');
       const rangePercentageElem = document.getElementById('range-percentage');
+      const printButton = document.getElementById('printButton');
 
       function generatePDF() {
         const { jsPDF } = window.jspdf;
@@ -418,7 +417,7 @@
       }
 
       // Event-Listener für den Drucken-Button
-      document.getElementById('printButton').addEventListener('click', generatePDF);
+      printButton.addEventListener('click', generatePDF);
 
       // Funktion zum Aktualisieren der Auswahl basierend auf Button-Klicks
       function updateSelection(value) {
@@ -515,6 +514,25 @@
         // Aktualisieren des Kuchendiagramms
         myPieChart.data.datasets[0].data = [longPercentage, shortPercentage, rangePercentage];
         myPieChart.update();
+
+        // Überprüfen, ob der Drucken-Button deaktiviert werden soll
+        checkPrintButtonState();
+      }
+
+      // Funktion zum Überprüfen des Zustands des Drucken-Buttons
+      function checkPrintButtonState() {
+        const activeButtons = document.querySelectorAll('.btn.active');
+        const longPercentage = parseInt(longPercentageElem.textContent.match(/\d+/)[0]);
+        const shortPercentage = parseInt(shortPercentageElem.textContent.match(/\d+/)[0]);
+        const rangePercentage = parseInt(rangePercentageElem.textContent.match(/\d+/)[0]);
+
+        if (activeButtons.length === 0 || (longPercentage === 0 && shortPercentage === 0 && rangePercentage === 0)) {
+          printButton.disabled = true;
+          printButton.style.opacity = 0.5;
+        } else {
+          printButton.disabled = false;
+          printButton.style.opacity = 1;
+        }
       }
 
       // Event-Listener für alle Buttons hinzufügen
@@ -944,8 +962,6 @@
     Kontakt
   </div>
 </footer>
-
-
 
 </body>
 </html>
