@@ -53,7 +53,8 @@
     /* Grundlegende Seitengestaltung */
     body {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
       min-height: 100vh;
       margin: 0;
@@ -190,6 +191,40 @@
     #printButton:hover {
       background-color: #333; /* Hintergrundfarbe beim Hover */
       color: white; /* Textfarbe beim Hover */
+    }
+
+    /* Footer-Styling */
+    .footer {
+      width: 100%;
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      margin-top: 20px;
+    }
+
+    .footer a {
+      color: #4da6ff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer button {
+      background-color: transparent;
+      color: white;
+      border: 1px solid white;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .footer button:hover {
+      background-color: white;
+      color: #333;
     }
   </style>
   <script>
@@ -883,5 +918,17 @@
     <div>
     </div>
   </div>
+
+<!-- Footer -->
+<footer class="footer" style="text-align: center; font-size: 0.9rem; color: #666;">
+  <div>
+    <a href="https://github.com/FlorianKip/dailybias" target="_blank">Open Source Projekt</a> – Hosted on GitHub Pages
+    <button onclick="window.location.href='mailto:florian@kiptschuk.de'" style="padding: 0.5rem 1rem; border: none; background-color: #1463b8; color: white; border-radius: 5px; cursor: pointer;">
+    Kontakt
+  </div>
+</footer>
+
+
+
 </body>
 </html>
