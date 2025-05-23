@@ -11,6 +11,7 @@
   <!-- Chart.js Bibliothek -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    /* Ihr bestehendes CSS */
     .btn {
       padding: 10px 15px;
       border: 1px solid #ccc;
@@ -190,14 +191,16 @@
     }
   </style>
   <script>
+    let myPieChart; // Globale Variable für das Diagramm
+
     document.addEventListener('DOMContentLoaded', () => {
       const ctx = document.getElementById('myPieChart').getContext('2d');
-      const myPieChart = new Chart(ctx, {
+      myPieChart = new Chart(ctx, {
         type: 'pie',
         data: {
           labels: ['Long', 'Short', 'Range'],
           datasets: [{
-            data: [100, 100, 100], // Hier die prozentuale Verteilung eintragen
+            data: [0, 0, 0], // Anfangswerte
             backgroundColor: ['#C2FFC2', '#FBBDBD', '#FFE9C0'],
           }]
         },
@@ -207,13 +210,14 @@
           plugins: {
             legend: {
               display: false
+            },
+            tooltip: {
+              enabled: false // Tooltips deaktivieren
             }
           }
         }
       });
-    });
 
-    document.addEventListener('DOMContentLoaded', () => {
       // Selektieren aller relevanten Elemente
       const selects = document.querySelectorAll('select');
       const longPercentageElem = document.getElementById('long-percentage');
@@ -453,6 +457,10 @@
         document.getElementById('long-percentage').textContent = `Long: ${longPercentage}%`;
         document.getElementById('short-percentage').textContent = `Short: ${shortPercentage}%`;
         document.getElementById('range-percentage').textContent = `Range: ${rangePercentage}%`;
+
+        // Aktualisieren des Kuchendiagramms
+        myPieChart.data.datasets[0].data = [longPercentage, shortPercentage, rangePercentage];
+        myPieChart.update();
       }
 
       // Event-Listener für alle Buttons hinzufügen
@@ -515,6 +523,7 @@
         default:
           colorIndicator.style.backgroundColor = 'transparent';
       }
+      calculateButtonPercentages(); // Aktualisieren der Prozentsätze und des Diagramms
     }
 
     function updateSelection(value) {
@@ -538,6 +547,10 @@
 
         // Hintergrundfarbe zurücksetzen
         document.querySelector('body').style.backgroundColor = '#f2f2f2';
+
+        // Diagramm zurücksetzen
+        myPieChart.data.datasets[0].data = [0, 0, 0];
+        myPieChart.update();
       }
     }
 
@@ -575,6 +588,10 @@
 
           // Hintergrundfarbe zurücksetzen
           document.body.style.backgroundColor = '#f2f2f2';
+
+          // Diagramm zurücksetzen
+          myPieChart.data.datasets[0].data = [0, 0, 0];
+          myPieChart.update();
         }
       }
 
@@ -603,7 +620,7 @@
     <div class="header-container">
       <!-- Titel -->
       <div class="title">
-        Daily BIAS
+        Daily BIAS:
         <!-- Kuchendiagramm -->
         <div class="pie-chart">
           <canvas id="myPieChart" width="40" height="40"></canvas>
