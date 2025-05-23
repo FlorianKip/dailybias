@@ -53,8 +53,8 @@
     }
 
     .btn.active[data-value="range"] {
-      background-color: #ffd700;
-      color: #000;
+      background-color: orange;
+      color: #fff;
     }
 
     .color-indicator {
@@ -151,18 +151,20 @@
       margin-top: 20px;
     }
 
-    .button-container button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+.button-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .button-container button:hover {
-      background-color: #005a9e;
-      color: white;
-    }
+.button-container button:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* leichter Glow-Effekt */
+}
 
     /* Container für Titel und Drucken-Button */
     .header-container {
@@ -570,7 +572,7 @@
           colorIndicator.style.backgroundColor = 'red';
           break;
         case 'range':
-          colorIndicator.style.backgroundColor = 'yellow';
+          colorIndicator.style.backgroundColor = 'orange';
           break;
         default:
           colorIndicator.style.backgroundColor = 'transparent';
