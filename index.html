@@ -19,6 +19,8 @@
       cursor: pointer;
       border-radius: 5px;
       transition: background-color 0.3s;
+      width: 100px; /* Buttons gleich lang machen */
+      margin-right: 5px; /* Abstand zwischen den Buttons */
     }
 
     .btn:hover {
@@ -645,7 +647,7 @@
         <tr>
           <td>Price Action</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
@@ -659,7 +661,7 @@
         <tr>
           <td>Volume Profile</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
@@ -672,7 +674,7 @@
         <tr>
           <td>Starke Liquiditäten</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
             </div>
@@ -685,7 +687,7 @@
         <tr>
           <td>Intraday Value Area</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; preday VA</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; preday VA</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">inside preday VA</button>
@@ -699,7 +701,7 @@
         <tr>
           <td>Preday</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
@@ -713,7 +715,7 @@
         <tr>
           <td>Price -&gt; Initial Range</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; IR</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; IR</button>
             </div>
@@ -726,7 +728,7 @@
         <tr>
           <td>Price -&gt; VWAP</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VWAP</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VWAP</button>
             </div>
@@ -739,7 +741,7 @@
         <tr>
           <td>Price -&gt; Intraday VA</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; VA</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; VA</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">in VA</button>
@@ -753,7 +755,7 @@
         <tr>
           <td>Price &lt;&gt; Intraday DH/DL</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; DH</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; DL</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Range</button>
@@ -767,7 +769,7 @@
         <tr>
           <td>Price &lt;&gt; Preday DH/DL</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">&gt; preDH</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">&lt; preDL</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">inside Preday</button>
@@ -781,7 +783,7 @@
         <tr>
           <td>Fakeout? Intraday (MP)</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Fakeout DL</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Fakeout DH</button>
             </div>
@@ -794,7 +796,7 @@
         <tr>
           <td>Fakeout? Preday (MP)</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Fakeout preDL</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Fakeout preDH</button>
             </div>
@@ -807,7 +809,7 @@
         <tr>
           <td>Single Print Intraday (MP)</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
             </div>
@@ -820,7 +822,7 @@
         <tr>
           <td>Single Print Preday (MP)</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Long</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Short</button>
             </div>
@@ -833,7 +835,7 @@
         <tr>
           <td>Tail Intraday (MP)</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Buying Tail</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Selling Tail</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Beides/Keine</button>
@@ -846,7 +848,7 @@
         <tr>
           <td>Tail Preday (MP)</td>
           <td>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
               <button type="button" class="btn" data-value="long" onclick="setSelection('long', this)">Buying Tail</button>
               <button type="button" class="btn" data-value="short" onclick="setSelection('short', this)">Selling Tail</button>
               <button type="button" class="btn" data-value="range" onclick="setSelection('range', this)">Beides/Keine</button>
