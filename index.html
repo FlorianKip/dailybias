@@ -10,6 +10,64 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+    /* =========================================================
+       GLOBAL VARIABLES
+    ========================================================= */
+    :root {
+      --bg: #0b1020;
+      --card: #0f1733;
+      --text: #e8eefc;
+      --muted: #a8b3d6;
+      --line: #243056;
+
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --info: #60a5fa;
+
+      --pill: #111b3d;
+    }
+
+    /* =========================================================
+       RESET / BASE
+    ========================================================= */
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+
+      /* Globaler Hintergrund */
+      background:
+        radial-gradient(800px 600px at 18% 10%,
+          rgba(96, 165, 250, 0.20),
+          rgba(96, 165, 250, 0.08) 35%,
+          rgba(11, 16, 32, 0.0) 70%),
+        radial-gradient(1200px 700px at 20% 0%,
+          #17244f 0%,
+          var(--bg) 60%);
+
+      color: var(--text);
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--info);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
+
+    /* =========================================================
+       BUTTON STYLES
+    ========================================================= */
     button.btn[data-value="long"] {
       border: 1px solid #00c200;
       border-radius: 15px;
@@ -27,32 +85,38 @@
 
     .btn {
       padding: 10px 15px;
-      border: 1px solid #ccc;
-      background-color: #f9f9f9;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
       cursor: pointer;
       border-radius: 5px;
-      transition: background-color 0.3s;
+      transition: all 0.3s;
       width: 100px;
       margin-right: 5px;
+      color: var(--text);
+      font-size: 0.9rem;
     }
 
     .btn:hover {
-      background-color: #e0e0e0;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
     }
 
     .btn.active[data-value="long"] {
-      background-color: green;
+      background-color: var(--good);
       color: #fff;
+      font-weight: 600;
     }
 
     .btn.active[data-value="short"] {
-      background-color: red;
+      background-color: var(--bad);
       color: #fff;
+      font-weight: 600;
     }
 
     .btn.active[data-value="range"] {
-      background-color: orange;
+      background-color: var(--warn);
       color: #fff;
+      font-weight: 600;
     }
 
     .color-indicator {
@@ -60,86 +124,88 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: 1px solid #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      font-family: "Roboto", sans-serif;
-      background-color: #f2f2f2;
-      color: #333;
-      transition: background-color 0.5s ease;
-    }
-
+    /* =========================================================
+       LAYOUT CONTAINER
+    ========================================================= */
     .container {
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+      border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 18px;
       padding: 30px;
-      max-width: 800px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+      max-width: 1100px;
       width: 90%;
+      margin: 32px auto;
     }
 
     h1 {
       text-align: center;
-      color: #005a9e;
+      color: var(--info);
       margin-bottom: 30px;
       font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: .2px;
     }
 
+    /* =========================================================
+       TABLE STYLES
+    ========================================================= */
     table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(0, 0, 0, .12);
     }
 
     th,
     td {
       padding: 10px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
       vertical-align: middle;
     }
 
     th {
-      background-color: #f2f2f2;
-      font-weight: 700;
-      color: #005a9e;
+      background: rgba(96, 165, 250, .12);
+      font-weight: 650;
+      font-size: .85rem;
+      color: #f2f6ff;
+      border-bottom: 1px solid rgba(255, 255, 255, .10);
     }
 
     tr:hover {
-      background-color: #f2f2f2;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0
     }
 
     select {
       width: 100%;
       padding: 8px;
       font-size: 1em;
-      border: 1px solid #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 3px;
-      background-color: #f2f2f2;
-      color: #333;
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text);
     }
 
     select:focus {
       outline: none;
-      border-color: #005a9e;
+      border-color: var(--info);
     }
 
-    .color-indicator {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 8px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-      transition: background-color 0.3s ease;
-    }
-
+    /* =========================================================
+       BUTTON CONTAINER
+    ========================================================= */
     .button-container {
       display: flex;
       justify-content: space-between;
@@ -150,32 +216,45 @@
 
     .button-container button {
       padding: 10px 20px;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 5px;
       cursor: pointer;
-      background-color: white;
-      color: black;
-      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+      color: var(--text);
+      transition: all 0.3s ease;
       min-width: 80px;
       flex-grow: 1;
+      font-weight: 600;
     }
 
     .button-container button:hover {
-      background-color: #e0e0e0;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
     }
 
+    .percentage-container p {
+      margin: 0;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    /* =========================================================
+       HEADER CONTAINER
+    ========================================================= */
     .header-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .title {
       font-size: 24px;
       font-weight: bold;
-      color: #005a9e;
+      color: var(--info);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -186,18 +265,18 @@
     }
 
     #printButton {
-      background-color: transparent;
-      color: #333;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+      color: var(--text);
       padding: 10px 20px;
-      border: 2px solid #333;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
+      transition: all 0.3s;
     }
 
     #printButton:hover {
-      background-color: #333;
-      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
     }
 
     #printButton:disabled {
@@ -206,17 +285,38 @@
       pointer-events: none;
     }
 
+    /* Chart Link Button */
+    .header-container a button {
+      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+      color: var(--text);
+      padding: 10px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .header-container a button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
     .footer {
       width: 100%;
-      background-color: #333;
-      color: white;
+      background: rgba(0, 0, 0, 0.3);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
       text-align: center;
-      padding: 10px 0;
-      margin-top: 20px;
+      padding: 16px 0;
+      margin-top: auto;
+      font-size: 0.85rem;
     }
 
     .footer a {
-      color: #4da6ff;
+      color: var(--info);
       text-decoration: none;
     }
 
@@ -225,30 +325,35 @@
     }
 
     .footer button {
-      background-color: transparent;
-      color: white;
-      border: 1px solid white;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 5px;
-      padding: 5px 10px;
+      padding: 8px 16px;
       cursor: pointer;
       margin-left: 10px;
+      transition: all 0.3s;
     }
 
     .footer button:hover {
-      background-color: white;
-      color: #333;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
     }
 
+    /* =========================================================
+       SLIDER
+    ========================================================= */
     .slider {
       -webkit-appearance: none;
       width: 100%;
       height: 15px;
       border-radius: 5px;
-      background: #d3d3d3;
+      background: rgba(0, 0, 0, 0.3);
       outline: none;
       -webkit-transition: 0.2s;
       transition: 0.2s;
       cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .slider::-webkit-slider-thumb {
@@ -257,23 +362,47 @@
       width: 25px;
       height: 25px;
       border-radius: 50%;
-      background: #0073e6;
+      background: var(--info);
       cursor: pointer;
       transition: background-color 0.2s ease;
+      box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4);
     }
 
     .slider::-moz-range-thumb {
       width: 25px;
       height: 25px;
       border-radius: 50%;
-      background: #0073e6;
+      background: var(--info);
       cursor: pointer;
       transition: background-color 0.2s ease;
+      box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4);
     }
 
     .slider:disabled {
       opacity: 0.5;
       cursor: default;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .title {
+        justify-content: center;
+      }
+
+      .button-container {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -288,8 +417,7 @@
         </div>
       </div>
       <a href="https://html.cafe/xace0383a" target="_blank">
-        <button
-          style="background-color: transparent; color: #333; padding: 10px 20px; border: 2px solid #333; border-radius: 5px; cursor: pointer; transition: background-color 0.3s, color 0.3s;">
+        <button>
           📊 US News & NQ Chart
         </button>
       </a>
@@ -531,37 +659,36 @@
     </table>
     <div class="button-container">
       <button data-value="long" id="btn-long"
-        style="background-color:#C2FFC2; border: 2px solid #008000; border-radius: 5px;">Long</button>
+        style="background-color:#22c55e; border: 2px solid #16a34a; border-radius: 5px; color: white;">Long</button>
       <div class="percentage-container">
-        <p style="background-color:#C2FFC2; font-weight: bold; border: 2px solid #008000; border-radius: 5px; padding: 5px;"
+        <p style="background-color:#22c55e; font-weight: bold; border: 2px solid #16a34a; border-radius: 5px; color: white;"
           id="long-percentage">
           Long: 0%
         </p>
       </div>
       <button data-value="short" id="btn-short"
-        style="background-color:#FBBDBD; border: 2px solid #ff0000; border-radius: 5px;">Short</button>
+        style="background-color:#ef4444; border: 2px solid #dc2626; border-radius: 5px; color: white;">Short</button>
       <div class="percentage-container">
-        <p style="background-color:#FBBDBD; font-weight: bold; border: 2px solid #ff0000; border-radius: 5px; padding: 5px;"
+        <p style="background-color:#ef4444; font-weight: bold; border: 2px solid #dc2626; border-radius: 5px; color: white;"
           id="short-percentage">
           Short: 0%
         </p>
       </div>
       <button data-value="range" id="btn-range"
-        style="background-color:#FFE9C0; border: 2px solid #ffa500; border-radius: 5px;">Range</button>
+        style="background-color:#f59e0b; border: 2px solid #d97706; border-radius: 5px; color: white;">Range</button>
       <div class="percentage-container">
-        <p style="background-color:#FFE9C0; font-weight: bold; border: 2px solid #ffa500; border-radius: 5px; padding: 5px;"
+        <p style="background-color:#f59e0b; font-weight: bold; border: 2px solid #d97706; border-radius: 5px; color: white;"
           id="range-percentage">
           Range: 0%
         </p>
       </div>
-      <button data-value="clear" id="btn-clear" style="border: 2px solid #ccc; border-radius: 5px;">Clear</button>
+      <button data-value="clear" id="btn-clear" style="border: 2px solid rgba(255,255,255,0.2); border-radius: 5px;">Clear</button>
     </div>
   </div>
-  <footer class="footer" style="text-align: center; font-size: 0.9rem; color: #666;">
+  <footer class="footer">
     <div>
       <a href="https://github.com/FlorianKip/dailybias" target="_blank">Open Source Projekt</a> – Hosted on GitHub Pages
-      <button onclick="window.location.href='mailto:florian@kiptschuk.de'"
-        style="padding: 0.5rem 1rem; border: none; background-color: #1463b8; color: white; border-radius: 5px; cursor: pointer;">
+      <button onclick="window.location.href='mailto:florian@kiptschuk.de'">
         Kontakt
       </button>
     </div>
@@ -583,7 +710,7 @@
           labels: ["Long", "Short", "Range"],
           datasets: [{
             data: [0, 0, 0],
-            backgroundColor: ["#C2FFC2", "#FBBDBD", "#FFE9C0"],
+            backgroundColor: ["#22c55e", "#ef4444", "#f59e0b"],
           }],
         },
         options: {
@@ -641,23 +768,23 @@
         const min = Number(slider.min) || 1;
         const max = Number(slider.max) || 10;
         const percentage = ((value - min) / (max - min)) * 100;
-        slider.style.background = `linear-gradient(to right, #0073e6 0%, #0073e6 ${percentage}%, #d3d3d3 ${percentage}%, #d3d3d3 100%)`;
+        slider.style.background = `linear-gradient(to right, #60a5fa 0%, #60a5fa ${percentage}%, rgba(0,0,0,0.3) ${percentage}%, rgba(0,0,0,0.3) 100%)`;
 
         const tr = slider.closest("tr");
         if (!tr) return;
         const activeBtn = tr.querySelector(".btn.active");
         const indicator = tr.querySelector(".color-indicator");
         if (!activeBtn || !indicator) {
-          indicator.style.backgroundColor = "#ccc";
+          indicator.style.backgroundColor = "rgba(255,255,255,0.1)";
           return;
         }
 
         const val = activeBtn.getAttribute("data-value");
         const baseColor = {
-          long: "rgb(0,128,0)",
-          short: "rgb(255,0,0)",
-          range: "rgb(255,165,0)",
-        }[val] || "#ccc";
+          long: "rgb(34,197,94)",
+          short: "rgb(239,68,68)",
+          range: "rgb(245,158,11)",
+        }[val] || "rgba(255,255,255,0.1)";
         const intensity = 0.1 + ((value - min) / (max - min)) * 0.9;
         indicator.style.backgroundColor = adjustColorIntensity(baseColor, intensity);
         calculateButtonPercentages();
@@ -679,9 +806,9 @@
           if (slider) {
             slider.disabled = true;
             slider.value = 5;
-            slider.style.background = "#d3d3d3";
+            slider.style.background = "rgba(0,0,0,0.3)";
           }
-          if (indicator) indicator.style.backgroundColor = "#ccc";
+          if (indicator) indicator.style.backgroundColor = "rgba(255,255,255,0.1)";
         } else {
           buttons.forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
@@ -704,16 +831,14 @@
           const indicator = tr.querySelector(".color-indicator");
           if (!indicator || !indicator.style.backgroundColor) return;
           const bg = indicator.style.backgroundColor;
-          if (bg.includes("0, 128, 0")) counts.long++;
-          else if (bg.includes("255, 0, 0")) counts.short++;
-          else if (bg.includes("255, 165, 0")) counts.range++;
+          if (bg.includes("34, 197, 94")) counts.long++;
+          else if (bg.includes("239, 68, 68")) counts.short++;
+          else if (bg.includes("245, 158, 11")) counts.range++;
         });
 
+        // Keep the original radial gradient background
         const body = document.body;
-        body.style.backgroundColor =
-          counts.long >= 6 ? "#C2FFC2" :
-            counts.short >= 6 ? "#FBBDBD" :
-              counts.range >= 6 ? "#FFE9C0" : "#f2f2f2";
+        // We don't change the background based on counts in dark mode
       }
 
       /**
@@ -791,9 +916,9 @@
             if (slider) {
               slider.disabled = true;
               slider.value = 5;
-              slider.style.background = "#d3d3d3";
+              slider.style.background = "rgba(0,0,0,0.3)";
             }
-            if (indicator) indicator.style.backgroundColor = "#ccc";
+            if (indicator) indicator.style.backgroundColor = "rgba(255,255,255,0.1)";
           }
         });
         calculateButtonPercentages();
@@ -820,13 +945,12 @@
         document.querySelectorAll(".slider").forEach((slider) => {
           slider.disabled = true;
           slider.value = 5;
-          slider.style.background = "#d3d3d3";
+          slider.style.background = "rgba(0,0,0,0.3)";
         });
-        document.querySelectorAll(".color-indicator").forEach((ind) => (ind.style.backgroundColor = "#ccc"));
+        document.querySelectorAll(".color-indicator").forEach((ind) => (ind.style.backgroundColor = "rgba(255,255,255,0.1)"));
         elements.longPercentage.textContent = "Long: 0%";
         elements.shortPercentage.textContent = "Short: 0%";
         elements.rangePercentage.textContent = "Range: 0%";
-        document.body.style.backgroundColor = "#f2f2f2";
         [elements.btnLong, elements.btnShort, elements.btnRange].forEach((btn) => btn.classList.remove("active"));
         myPieChart.data.datasets[0].data = [0, 0, 0];
         myPieChart.update();
