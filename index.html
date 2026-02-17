@@ -822,12 +822,33 @@
       <h3 style="color: var(--info); margin-top: 0;">🎯 Wichtigste Events für Futures Trader</h3>
       <p style="color: var(--muted); margin-bottom: 15px;">Diese Events verursachen regelmäßig starke Bewegungen in ES, NQ und anderen Futures:</p>
       <div class="key-events" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
-        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;"><strong>🔴 NFP</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Non-Farm Payrolls<br>1. Freitag/Monat</span></div>
-        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;"><strong>🔴 FOMC</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Fed Zinsentscheid<br>8x pro Jahr</span></div>
-        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;"><strong>🔴 CPI</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Verbraucherpreise<br>~10. des Monats</span></div>
-        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;"><strong>🟠 GDP</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">BIP Wachstum<br>Quartalsweise</span></div>
-        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;"><strong>🟠 Retail Sales</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Einzelhandel<br>~15. des Monats</span></div>
-        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;"><strong>🟠 Jobless Claims</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Arbeitslosen<br>Jeden Donnerstag</span></div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;">
+          <strong>🔴 NFP</strong>
+          <span style="display: block; color: var(--muted); font-size: 0.9em;">Non-Farm Payrolls<br>1. Freitag/Monat</span>
+          <span id="nfp-date" style="display: block; color: #10b981; font-size: 0.85em; margin-top: 5px; font-weight: 600;"></span>
+        </div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;">
+          <strong>🔴 FOMC</strong>
+          <span style="display: block; color: var(--muted); font-size: 0.9em;">Fed Zinsentscheid<br>8x pro Jahr</span>
+          <span id="fomc-date" style="display: block; color: #10b981; font-size: 0.85em; margin-top: 5px; font-weight: 600;"></span>
+        </div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;">
+          <strong>🔴 CPI</strong>
+          <span style="display: block; color: var(--muted); font-size: 0.9em;">Verbraucherpreise<br>~10. des Monats</span>
+          <span id="cpi-date" style="display: block; color: #10b981; font-size: 0.85em; margin-top: 5px; font-weight: 600;"></span>
+        </div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;">
+          <strong>🟠 GDP</strong>
+          <span style="display: block; color: var(--muted); font-size: 0.9em;">BIP Wachstum<br>Quartalsweise</span>
+        </div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;">
+          <strong>🟠 Retail Sales</strong>
+          <span style="display: block; color: var(--muted); font-size: 0.9em;">Einzelhandel<br>~15. des Monats</span>
+        </div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;">
+          <strong>🟠 Jobless Claims</strong>
+          <span style="display: block; color: var(--muted); font-size: 0.9em;">Arbeitslosen<br>Jeden Donnerstag 14:30 Uhr</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1307,6 +1328,164 @@
 
       // Initial state
       clearAll();
+
+      // Economic Events Calendar
+      function getNextFriday(date) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + ((5 - result.getDay() + 7) % 7 || 7));
+        return result;
+      }
+
+      function getFirstFriday(year, month) {
+        const firstDay = new Date(year, month, 1);
+        return getNextFriday(firstDay);
+      }
+
+      function getNextThursday(date) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + ((4 - result.getDay() + 7) % 7 || 7));
+        return result;
+      }
+
+      function formatEventDate(date) {
+        const options = { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' };
+        const dateStr = date.toLocaleDateString('de-DE', options);
+        const timeStr = '14:30'; // Most US economic data releases at 14:30 CET
+        return `📅 ${dateStr} um ${timeStr}`;
+      }
+
+      function getNextNFP() {
+        const now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth();
+        
+        let nextNFP = getFirstFriday(year, month);
+        
+        if (nextNFP <= now) {
+          month++;
+          if (month > 11) {
+            month = 0;
+            year++;
+          }
+          nextNFP = getFirstFriday(year, month);
+        }
+        
+        return nextNFP;
+      }
+
+      function getNextFOMC() {
+        // FOMC meeting dates for 2025 (update annually)
+        const fomcDates2025 = [
+          new Date(2025, 0, 29),  // Jan 28-29
+          new Date(2025, 2, 19),  // Mar 18-19
+          new Date(2025, 4, 7),   // May 6-7
+          new Date(2025, 5, 18),  // Jun 17-18
+          new Date(2025, 6, 30),  // Jul 29-30
+          new Date(2025, 8, 17),  // Sep 16-17
+          new Date(2025, 10, 6),  // Nov 5-6
+          new Date(2025, 11, 17)  // Dec 16-17
+        ];
+
+        // FOMC meeting dates for 2026
+        const fomcDates2026 = [
+          new Date(2026, 0, 28),  // Jan 27-28
+          new Date(2026, 2, 18),  // Mar 17-18
+          new Date(2026, 4, 6),   // May 5-6
+          new Date(2026, 5, 17),  // Jun 16-17
+          new Date(2026, 6, 29),  // Jul 28-29
+          new Date(2026, 8, 16),  // Sep 15-16
+          new Date(2026, 10, 4),  // Nov 3-4
+          new Date(2026, 11, 16)  // Dec 15-16
+        ];
+
+        const allDates = [...fomcDates2025, ...fomcDates2026];
+        const now = new Date();
+        
+        for (let date of allDates) {
+          if (date > now) {
+            return date;
+          }
+        }
+        
+        return allDates[allDates.length - 1];
+      }
+
+      function getNextCPI() {
+        const now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth();
+        
+        let nextCPI = new Date(year, month, 11); // ~10th, but released on 11th typically
+        
+        if (nextCPI <= now) {
+          month++;
+          if (month > 11) {
+            month = 0;
+            year++;
+          }
+          nextCPI = new Date(year, month, 11);
+        }
+        
+        return nextCPI;
+      }
+
+      function getNextGDP() {
+        // GDP is released quarterly, typically late April, late July, late October, late January
+        const now = new Date();
+        const year = now.getFullYear();
+        const gdpDates = [
+          new Date(year, 0, 30),   // Q4 previous year (end of Jan)
+          new Date(year, 3, 30),   // Q1 (end of Apr)
+          new Date(year, 6, 30),   // Q2 (end of Jul)
+          new Date(year, 9, 30),   // Q3 (end of Oct)
+          new Date(year + 1, 0, 30) // Q4 (end of Jan next year)
+        ];
+        
+        for (let date of gdpDates) {
+          if (date > now) {
+            return date;
+          }
+        }
+        
+        return gdpDates[gdpDates.length - 1];
+      }
+
+      function getNextRetailSales() {
+        const now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth();
+        
+        let nextRetail = new Date(year, month, 15);
+        
+        if (nextRetail <= now) {
+          month++;
+          if (month > 11) {
+            month = 0;
+            year++;
+          }
+          nextRetail = new Date(year, month, 15);
+        }
+        
+        return nextRetail;
+      }
+
+      function getNextJoblessClaims() {
+        const now = new Date();
+        return getNextThursday(now);
+      }
+
+      function updateEconomicEvents() {
+        document.getElementById('nfp-date').textContent = formatEventDate(getNextNFP());
+        document.getElementById('fomc-date').textContent = formatEventDate(getNextFOMC());
+        document.getElementById('cpi-date').textContent = formatEventDate(getNextCPI());
+        document.getElementById('gdp-date').textContent = formatEventDate(getNextGDP());
+        document.getElementById('retail-date').textContent = formatEventDate(getNextRetailSales());
+        document.getElementById('jobless-date').textContent = formatEventDate(getNextJoblessClaims());
+      }
+
+      // Update economic events on load and daily
+      updateEconomicEvents();
+      setInterval(updateEconomicEvents, 3600000); // Update every hour
     });
   </script>
 </body>
