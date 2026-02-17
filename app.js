@@ -620,9 +620,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const fomcEl = document.getElementById('fomc-date');
     const cpiEl = document.getElementById('cpi-date');
     
-    if (nfpEl) nfpEl.textContent = formatEventDate(getNextNFP());
-    if (fomcEl) fomcEl.textContent = formatEventDate(getNextFOMC());
-    if (cpiEl) cpiEl.textContent = formatEventDate(getNextCPI());
+    // Calculate next dates
+    const nfpDate = getNextNFP();
+    const fomcDate = getNextFOMC();
+    const cpiDate = getNextCPI();
+    
+    // Update date text
+    if (nfpEl) nfpEl.textContent = formatEventDate(nfpDate);
+    if (fomcEl) fomcEl.textContent = formatEventDate(fomcDate);
+    if (cpiEl) cpiEl.textContent = formatEventDate(cpiDate);
+    
+    // Sort key-events by date
+    sortKeyEventsByDate([
+      { id: 'nfp-date', date: nfpDate },
+      { id: 'fomc-date', date: fomcDate },
+      { id: 'cpi-date', date: cpiDate }
+    ]);
+  }
+
+  function sortKeyEventsByDate(events) {
+    // Sort events by date (ascending - soonest first)
+    events.sort((a, b) => a.date - b.date);
+    
+    // Get the parent container
+    const keyEventsContainer = document.querySelector('.key-events');
+    if (!keyEventsContainer) return;
+    
+    // Get all key-event elements that have date spans (sorted by date)
+    const eventElements = events.map(event => {
+      const dateSpan = document.getElementById(event.id);
+      return dateSpan ? dateSpan.closest('.key-event') : null;
+    }).filter(Boolean);
+    
+    // Get all other key-event elements (without date spans - GDP, Retail Sales, Jobless Claims)
+    const allKeyEvents = Array.from(keyEventsContainer.querySelectorAll('.key-event'));
+    const otherEvents = allKeyEvents.filter(el => !eventElements.includes(el));
+    
+    // Clear the container and re-add in sorted order
+    // First add the dated events (sorted), then the other events
+    eventElements.forEach(element => {
+      keyEventsContainer.appendChild(element);
+    });
+    
+    // Add remaining events at the end
+    otherEvents.forEach(element => {
+      keyEventsContainer.appendChild(element);
+    });
   }
 
   // Update economic events on load and hourly
