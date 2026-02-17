@@ -29,6 +29,55 @@
     }
 
     /* =========================================================
+       NAVIGATION MENU
+    ========================================================= */
+    .nav-menu {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(11, 16, 32, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 20px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      padding: 8px 16px;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .nav-item:hover {
+      background: rgba(96, 165, 250, 0.15);
+      border-color: var(--info);
+      box-shadow: 0 0 12px rgba(96, 165, 250, 0.3);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .nav-item:active {
+      transform: translateY(0);
+    }
+
+    /* =========================================================
        RESET / BASE
     ========================================================= */
     * {
@@ -403,16 +452,45 @@
       .btn {
         width: 100%;
       }
+
+      .nav-container {
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .nav-item {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+      }
+    }
+
+    /* =========================================================
+       SMOOTH SCROLL
+    ========================================================= */
+    html {
+      scroll-behavior: smooth;
     }
   </style>
 </head>
 
 <body>
+  <!-- Navigation Menu -->
+  <nav class="nav-menu">
+    <div class="nav-container">
+      <a href="#top" class="nav-item">⬆️ Top</a>
+      <a href="#daily-bias" class="nav-item">📊 Daily BIAS</a>
+      <a href="#nq-chart" class="nav-item">📈 NQ Chart</a>
+      <a href="#calendar" class="nav-item">📅 Calendar</a>
+      <a href="https://html.cafe/xace0383a" target="_blank" class="nav-item">🔗 US News</a>
+      <a href="https://github.com/FlorianKip/dailybias" target="_blank" class="nav-item">💻 GitHub</a>
+    </div>
+  </nav>
 
 
 
 
-  <div class="container">
+  <div id="daily-bias" class="container">
     <div class="header-container">
       <div class="title">
         Daily BIAS:
@@ -691,7 +769,7 @@
   </div>
 
   <!-- TradingView Advanced Chart Widget -->
-  <div class="container">
+  <div id="nq-chart" class="container">
     <h2 style="text-align: center; color: var(--info); margin-bottom: 20px; font-size: 1.4rem;">📊 NQ Futures Chart</h2>
     <div class="tradingview-widget-container" style="height: 600px; width: 100%;">
       <div class="tradingview-widget-container__widget"></div>
@@ -735,7 +813,7 @@
   </div>
 
   <!-- TradingView Economic Calendar Widget -->
-  <div class="container">
+  <div id="calendar" class="container">
     <h2 style="text-align: center; color: var(--info); margin-bottom: 20px; font-size: 1.4rem;">📅 Economic Calendar</h2>
     <div class="tradingview-widget-container">
       <iframe scrolling="no" allowtransparency="true" frameborder="0" src="https://www.tradingview.com/embed-widget/events/?locale=de_DE#%7B%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22550%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22countryFilter%22%3A%22us%22%7D" style="box-sizing:border-box;height:550px;width:100%;"></iframe>
