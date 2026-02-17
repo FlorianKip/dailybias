@@ -737,19 +737,20 @@
   <!-- TradingView Economic Calendar Widget -->
   <div class="container">
     <h2 style="text-align: center; color: var(--info); margin-bottom: 20px; font-size: 1.4rem;">📅 Economic Calendar</h2>
-    <div class="tradingview-widget-container" style="height: 450px;">
-      <div class="tradingview-widget-container__widget"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-      {
-        "colorTheme": "dark",
-        "isTransparent": true,
-        "width": "100%",
-        "height": "450",
-        "locale": "en",
-        "importanceFilter": "0,1",
-        "countryFilter": "us"
-      }
-      </script>
+    <div class="tradingview-widget-container">
+      <iframe scrolling="no" allowtransparency="true" frameborder="0" src="https://www.tradingview.com/embed-widget/events/?locale=de_DE#%7B%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22550%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22countryFilter%22%3A%22us%22%7D" style="box-sizing:border-box;height:550px;width:100%;"></iframe>
+    </div>
+    <div class="info-box" style="margin-top: 20px; padding: 20px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);">
+      <h3 style="color: var(--info); margin-top: 0;">🎯 Wichtigste Events für Futures Trader</h3>
+      <p style="color: var(--muted); margin-bottom: 15px;">Diese Events verursachen regelmäßig starke Bewegungen in ES, NQ und anderen Futures:</p>
+      <div class="key-events" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;"><strong>🔴 NFP</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Non-Farm Payrolls<br>1. Freitag/Monat</span></div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;"><strong>🔴 FOMC</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Fed Zinsentscheid<br>8x pro Jahr</span></div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #ef4444;"><strong>🔴 CPI</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Verbraucherpreise<br>~10. des Monats</span></div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;"><strong>🟠 GDP</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">BIP Wachstum<br>Quartalsweise</span></div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;"><strong>🟠 Retail Sales</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Einzelhandel<br>~15. des Monats</span></div>
+        <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;"><strong>🟠 Jobless Claims</strong><span style="display: block; color: var(--muted); font-size: 0.9em;">Arbeitslosen<br>Jeden Donnerstag</span></div>
+      </div>
     </div>
   </div>
 
