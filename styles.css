@@ -459,3 +459,234 @@ select:focus {
 html {
   scroll-behavior: smooth;
 }
+
+/* =========================================================
+   EQUITY SIMULATOR
+========================================================= */
+.simulator-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 800px) {
+  .simulator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sim-panel {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.sim-chart-panel {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.sim-form-group {
+  margin-bottom: 14px;
+}
+
+.sim-form-group label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.sim-form-group input {
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.sim-form-group input:focus {
+  outline: none;
+  border-color: var(--info);
+}
+
+.sim-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sim-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--info);
+  color: #001322;
+  font-weight: 700;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+  transition: all 0.3s;
+}
+
+.sim-btn:hover {
+  background: #7db8ff;
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+}
+
+.expectancy-box {
+  background: rgba(96, 165, 250, 0.1);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 14px;
+}
+
+.expectancy-box h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--info);
+}
+
+.expectancy-formula {
+  font-family: monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #7dd3ff;
+}
+
+.sim-chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+.sim-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .sim-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.sim-stat-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.sim-stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--info);
+}
+
+.sim-stat-label {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.sim-stat-box.good .sim-stat-value {
+  color: var(--good);
+}
+
+.sim-stat-box.bad .sim-stat-value {
+  color: var(--bad);
+}
+
+.sim-results-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 16px;
+}
+
+.sim-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sim-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.sim-result-item .sim-name {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.sim-result-item .sim-trades {
+  color: var(--text);
+}
+
+.sim-result-item .sim-outcome {
+  font-weight: 600;
+}
+
+.sim-result-item .sim-outcome.profit {
+  color: var(--good);
+}
+
+.sim-result-item .sim-outcome.loss {
+  color: var(--bad);
+}
+
+.sim-result-item .sim-outcome.none {
+  color: var(--muted);
+}
+
+/* Risk Mode Toggle */
+.risk-mode-toggle {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.risk-mode-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.risk-mode-btn:hover {
+  color: var(--text);
+}
+
+.risk-mode-btn.active {
+  background: var(--info);
+  color: #001322;
+}
