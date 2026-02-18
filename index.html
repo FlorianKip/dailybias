@@ -17,8 +17,9 @@
     <div class="nav-container">
       <a href="#top" class="nav-item">⬆️ Top</a>
       <a href="#daily-bias" class="nav-item">📊 Daily BIAS</a>
-      <a href="#nq-chart" class="nav-item">📈 NQ Chart</a>
+      <a href="#nq-chart" class="nav-item">📉 NQ Chart</a>
       <a href="#calendar" class="nav-item">📅 Calendar</a>
+      <a href="#equity-simulator" class="nav-item">📈 Monte Carlo Simulator</a>
       <a href="https://html.cafe/xace0383a" target="_blank" class="nav-item">🔗 US News</a>
       <a href="https://github.com/FlorianKip/dailybias" target="_blank" class="nav-item">💻 GitHub</a>
     </div>
@@ -382,6 +383,113 @@
         <div class="key-event" style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 5px; border-left: 3px solid #f59e0b;">
           <strong>🟠 Jobless Claims</strong>
           <span style="display: block; color: var(--muted); font-size: 0.9em;">Arbeitslosen<br>Jeden Donnerstag 14:30 Uhr</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equity Simulator -->
+  <div id="equity-simulator" class="container">
+    <h2 style="text-align: center; color: var(--info); margin-bottom: 20px; font-size: 1.4rem;">📈 Monte Carlo Simulator</h2>
+    
+    <div class="simulator-grid">
+      <!-- Parameter Panel -->
+      <div class="sim-panel">
+        <h3 style="margin: 0 0 16px; font-size: 1rem; color: var(--text);">⚙️ Parameter</h3>
+        
+        <div class="sim-form-group">
+          <label>Start-Kapital ($)</label>
+          <input type="number" id="startCapital" value="2000" step="100">
+        </div>
+        
+        <div class="sim-form-row">
+          <div class="sim-form-group">
+            <label>Trefferquote (%)</label>
+            <input type="number" id="winRate" value="60">
+          </div>
+          <div class="sim-form-group">
+            <label>CRV</label>
+            <input type="number" id="crv" value="1.0" step="0.1">
+          </div>
+        </div>
+        
+        <div class="sim-form-group">
+          <label>Risk Modus</label>
+          <div class="risk-mode-toggle">
+            <button type="button" id="riskModePercent" class="risk-mode-btn active" onclick="setRiskMode('percent')">% Prozentual</button>
+            <button type="button" id="riskModeDollar" class="risk-mode-btn" onclick="setRiskMode('dollar')">$ Fix</button>
+          </div>
+        </div>
+        
+        <div class="sim-form-group" id="riskPercentGroup">
+          <label>Risk/Trade (%)</label>
+          <input type="number" id="riskPercent" value="5" step="0.1">
+        </div>
+        
+        <div class="sim-form-group" id="riskDollarGroup" style="display: none;">
+          <label>Risk/Trade ($)</label>
+          <input type="number" id="riskDollar" value="100" step="50">
+        </div>
+        
+        <div class="sim-form-group">
+          <label>Trades</label>
+          <input type="number" id="numTrades" value="100" step="10">
+        </div>
+        
+        <div class="sim-form-row">
+          <div class="sim-form-group">
+            <label>Profit Goal ($)</label>
+            <input type="number" id="profitGoal" value="3500" step="100">
+          </div>
+          <div class="sim-form-group">
+            <label>Loss Limit ($)</label>
+            <input type="number" id="lossLimit" value="100" step="100">
+          </div>
+        </div>
+        
+        <div class="sim-form-group">
+          <label>Simulationen (1-10)</label>
+          <input type="number" id="numSims" value="5" min="1" max="10">
+        </div>
+        
+        <button class="sim-btn" onclick="runEquitySimulation()">🚀 Simulation starten</button>
+        
+        <div class="expectancy-box">
+          <h4>📊 Erwartungswert</h4>
+          <div class="expectancy-formula" id="expectancy">E = 0.38R pro Trade</div>
+        </div>
+      </div>
+      
+      <!-- Chart Panel -->
+      <div class="sim-chart-panel">
+        <div class="sim-chart-container">
+          <canvas id="equityChart"></canvas>
+        </div>
+        <div class="sim-stats-grid">
+          <div class="sim-stat-box good">
+            <div class="sim-stat-value" id="bestCase">$0</div>
+            <div class="sim-stat-label">Best Case</div>
+          </div>
+          <div class="sim-stat-box">
+            <div class="sim-stat-value" id="avgCase">$0</div>
+            <div class="sim-stat-label">Durchschnitt</div>
+          </div>
+          <div class="sim-stat-box bad">
+            <div class="sim-stat-value" id="worstCase">$0</div>
+            <div class="sim-stat-label">Worst Case</div>
+          </div>
+          <div class="sim-stat-box">
+            <div class="sim-stat-value" id="maxDD">0%</div>
+            <div class="sim-stat-label">Max Drawdown</div>
+          </div>
+        </div>
+        
+        <!-- Simulation Results Card -->
+        <div class="sim-results-card">
+          <h4 style="margin: 0 0 10px; font-size: 0.9rem; color: var(--text);">🎯 Ziel-Erreichung</h4>
+          <div id="simResults" class="sim-results-list">
+            <!-- Filled by JavaScript -->
+          </div>
         </div>
       </div>
     </div>
