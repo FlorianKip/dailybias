@@ -671,4 +671,386 @@ document.addEventListener("DOMContentLoaded", () => {
   // Update economic events on load and hourly
   updateEconomicEvents();
   setInterval(updateEconomicEvents, 3600000); // Update every hour
+
+  // =========================================================
+  // Equity Simulator Functions
+  // =========================================================
+
+  let equityChart = null;
+  let riskMode = 'percent'; // 'percent' or 'dollar'
+  const equityColors = ['#22c55e', '#60a5fa', '#f59e0b', '#ef4444', '#a855f7', '#14b8a6', '#84cc16', '#f97316'];
+
+  /**
+   * Sets the risk mode (percent or dollar) and updates UI accordingly.
+   * @param {string} mode - 'percent' or 'dollar'
+   */
+  window.setRiskMode = function(mode) {
+    riskMode = mode;
+    
+    const percentBtn = document.getElementById('riskModePercent');
+    const dollarBtn = document.getElementById('riskModeDollar');
+    const percentGroup = document.getElementById('riskPercentGroup');
+    const dollarGroup = document.getElementById('riskDollarGroup');
+    
+    if (mode === 'percent') {
+      percentBtn.classList.add('active');
+      dollarBtn.classList.remove('active');
+      percentGroup.style.display = 'block';
+      dollarGroup.style.display = 'none';
+    } else {
+      percentBtn.classList.remove('active');
+      dollarBtn.classList.add('active');
+      percentGroup.style.display = 'none';
+      dollarGroup.style.display = 'block';
+    }
+  };
+
+  /**
+   * Updates the expectancy display based on win rate and CRV inputs.
+   */
+  function updateExpectancy() {
+    const winRate = parseFloat(document.getElementById('winRate').value) / 100;
+    const crv = parseFloat(document.getElementById('crv').value);
+    const expectancy = (winRate * crv) - ((1 - winRate) * 1);
+    document.getElementById('expectancy').textContent = `E = ${expectancy.toFixed(2)}R pro Trade`;
+  }
+
+  /**
+   * Simulates a series of trades and returns the equity curve, max drawdown, and goal/limit info.
+   * @param {number} capital - Starting capital.
+   * @param {number} winRate - Win rate (0 to 1).
+   * @param {number} crv - Risk/Reward ratio.
+   * @param {number} riskValue - Risk per trade (percent or dollar based on mode).
+   * @param {string} riskModeParam - 'percent' or 'dollar'.
+   * @param {number} numTrades - Number of trades to simulate.
+   * @param {number} profitGoal - Target profit level.
+   * @param {number} lossLimit - Loss limit level.
+   * @returns {Object} Object containing equity array, maxDrawdown, and goal/limit info.
+   */
+  function simulateTrades(capital, winRate, crv, riskValue, riskModeParam, numTrades, profitGoal, lossLimit) {
+    const equity = [capital];
+    let current = capital;
+    let maxEquity = capital;
+    let maxDrawdown = 0;
+    let hitGoal = null; // { trade: number, type: 'profit' | 'loss' }
+
+    for (let i = 0; i < numTrades; i++) {
+      // Calculate risk amount based on mode
+      let riskAmount;
+      if (riskModeParam === 'percent') {
+        // Percentage mode: risk is recalculated based on current equity (compound)
+        riskAmount = current * (riskValue / 100);
+      } else {
+        // Dollar mode: fixed dollar amount per trade
+        riskAmount = riskValue;
+      }
+      
+      const win = Math.random() < winRate;
+      
+      if (win) {
+        current = current + (riskAmount * crv);
+      } else {
+        current = current - riskAmount;
+      }
+      
+      equity.push(current);
+      
+      if (current > maxEquity) {
+        maxEquity = current;
+      }
+      
+      const drawdown = (maxEquity - current) / maxEquity;
+      if (drawdown > maxDrawdown) {
+        maxDrawdown = drawdown;
+      }
+
+      // Check if profit goal or loss limit was hit (only record first hit)
+      if (!hitGoal) {
+        if (current >= profitGoal) {
+          hitGoal = { trade: i + 1, type: 'profit' };
+        } else if (current <= lossLimit) {
+          hitGoal = { trade: i + 1, type: 'loss' };
+        }
+      }
+    }
+
+    return { equity, maxDrawdown, hitGoal };
+  }
+
+  /**
+   * Runs the Monte Carlo simulation and updates the chart and statistics.
+   */
+  window.runEquitySimulation = function() {
+    const startCapital = parseFloat(document.getElementById('startCapital').value) || 10000;
+    const winRate = parseFloat(document.getElementById('winRate').value) / 100 || 0.55;
+    const crv = parseFloat(document.getElementById('crv').value) || 1.5;
+    const riskPercent = parseFloat(document.getElementById('riskPercent').value) || 1;
+    const riskDollar = parseFloat(document.getElementById('riskDollar').value) || 100;
+    const riskValue = riskMode === 'percent' ? riskPercent : riskDollar;
+    const numTrades = parseInt(document.getElementById('numTrades').value) || 100;
+    const numSims = Math.min(Math.max(parseInt(document.getElementById('numSims').value) || 5, 1), 10);
+    const profitGoal = parseFloat(document.getElementById('profitGoal').value) || 15000;
+    const lossLimit = parseFloat(document.getElementById('lossLimit').value) || 8000;
+
+    const simulations = [];
+    const simResults = []; // Store goal/limit hit info for each simulation
+    let maxDD = 0;
+
+    // Run simulations
+    for (let i = 0; i < numSims; i++) {
+      const result = simulateTrades(startCapital, winRate, crv, riskValue, riskMode, numTrades, profitGoal, lossLimit);
+      simulations.push(result.equity);
+      simResults.push(result.hitGoal);
+      if (result.maxDrawdown > maxDD) {
+        maxDD = result.maxDrawdown;
+      }
+    }
+
+    // Calculate statistics
+    const finalValues = simulations.map(s => s[s.length - 1]);
+    const bestCase = Math.max(...finalValues);
+    const worstCase = Math.min(...finalValues);
+    const avgCase = finalValues.reduce((a, b) => a + b, 0) / finalValues.length;
+
+    // Update statistics display
+    document.getElementById('bestCase').textContent = '$' + bestCase.toLocaleString('de-DE', { maximumFractionDigits: 0 });
+    document.getElementById('worstCase').textContent = '$' + worstCase.toLocaleString('de-DE', { maximumFractionDigits: 0 });
+    document.getElementById('avgCase').textContent = '$' + avgCase.toLocaleString('de-DE', { maximumFractionDigits: 0 });
+    document.getElementById('maxDD').textContent = (maxDD * 100).toFixed(1) + '%';
+
+    // Create chart labels (trade numbers)
+    const labels = Array.from({ length: numTrades + 1 }, (_, i) => i);
+
+    // Create datasets for each simulation
+    const datasets = simulations.map((sim, i) => ({
+      label: `Sim ${i + 1}`,
+      data: sim,
+      borderColor: equityColors[i % equityColors.length],
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      pointRadius: 0,
+      tension: 0.1
+    }));
+
+    // Add Profit Goal line (green dashed)
+    datasets.push({
+      label: 'Profit Goal',
+      data: Array(numTrades + 1).fill(profitGoal),
+      borderColor: '#22c55e',
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderDash: [10, 5],
+      pointRadius: 0,
+      tension: 0
+    });
+
+    // Add Loss Limit line (red dashed)
+    datasets.push({
+      label: 'Loss Limit',
+      data: Array(numTrades + 1).fill(lossLimit),
+      borderColor: '#ef4444',
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderDash: [10, 5],
+      pointRadius: 0,
+      tension: 0
+    });
+
+    // Destroy existing chart if it exists
+    if (equityChart) {
+      equityChart.destroy();
+    }
+
+    // Create new chart
+    const ctx = document.getElementById('equityChart').getContext('2d');
+    equityChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: '#a8b3d6',
+              autoSkip: false,
+              callback: function(value, index) {
+                // Calculate appropriate step based on number of trades
+                const totalTrades = numTrades;
+                let step;
+                if (totalTrades <= 50) step = 5;
+                else if (totalTrades <= 100) step = 10;
+                else if (totalTrades <= 200) step = 20;
+                else if (totalTrades <= 500) step = 50;
+                else step = 100;
+                
+                // Show only values at calculated step intervals
+                return index % step === 0 ? index : '';
+              }
+            },
+            title: {
+              display: true,
+              text: 'Trades',
+              color: '#a8b3d6',
+              font: {
+                size: 11
+              }
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#a8b3d6',
+              callback: function(value) {
+                return '$' + value.toLocaleString('de-DE');
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Update simulation results card
+    const simResultsContainer = document.getElementById('simResults');
+    if (simResultsContainer) {
+      // Calculate averages and median
+      let profitCount = 0, lossCount = 0, noneCount = 0;
+      let totalTrades = 0, reachedCount = 0;
+      const tradeCounts = [];
+      
+      simResults.forEach(result => {
+        if (result) {
+          totalTrades += result.trade;
+          reachedCount++;
+          tradeCounts.push(result.trade);
+          if (result.type === 'profit') profitCount++;
+          else lossCount++;
+        } else {
+          noneCount++;
+        }
+      });
+      
+      const avgTrades = reachedCount > 0 ? Math.round(totalTrades / reachedCount) : 0;
+      
+      // Calculate median
+      let medianTrades = 0;
+      if (tradeCounts.length > 0) {
+        tradeCounts.sort((a, b) => a - b);
+        const mid = Math.floor(tradeCounts.length / 2);
+        medianTrades = tradeCounts.length % 2 !== 0 
+          ? tradeCounts[mid] 
+          : Math.round((tradeCounts[mid - 1] + tradeCounts[mid]) / 2);
+      }
+      
+      // Build HTML
+      let html = simResults.map((result, i) => {
+        const colorClass = equityColors[i % equityColors.length];
+        let outcomeText, outcomeClass;
+        
+        if (result) {
+          if (result.type === 'profit') {
+            outcomeText = `🟢 Profit Goal @ Trade ${result.trade}`;
+            outcomeClass = 'profit';
+          } else {
+            outcomeText = `🔴 Loss Limit @ Trade ${result.trade}`;
+            outcomeClass = 'loss';
+          }
+        } else {
+          outcomeText = '— Nicht erreicht';
+          outcomeClass = 'none';
+        }
+        
+        return `
+          <div class="sim-result-item">
+            <span class="sim-name" style="color: ${colorClass}">Sim ${i + 1}</span>
+            <span class="sim-outcome ${outcomeClass}">${outcomeText}</span>
+          </div>
+        `;
+      }).join('');
+      
+      // Add summary row
+      html += `
+        <div class="sim-result-item" style="margin-top: 8px; background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.3);">
+          <span class="sim-name" style="color: var(--info)">Statistik</span>
+          <span style="color: var(--text); font-size: 11px;">Ø ${reachedCount > 0 ? avgTrades : '—'} | M̃ ${reachedCount > 0 ? medianTrades : '—'} | 🟢 ${profitCount} | 🔴 ${lossCount} | — ${noneCount}</span>
+        </div>
+      `;
+      
+      simResultsContainer.innerHTML = html;
+    }
+  };
+
+  /**
+   * Synchronizes risk percent and risk dollar inputs.
+   * @param {string} source - Which input was changed ('percent' or 'dollar')
+   */
+  function syncRiskInputs(source) {
+    const startCapital = parseFloat(document.getElementById('startCapital').value) || 10000;
+    const riskPercentInput = document.getElementById('riskPercent');
+    const riskDollarInput = document.getElementById('riskDollar');
+    
+    if (!riskPercentInput || !riskDollarInput) return;
+    
+    if (source === 'percent') {
+      const percent = parseFloat(riskPercentInput.value) || 0;
+      const dollar = (startCapital * percent / 100);
+      riskDollarInput.value = Math.round(dollar);
+    } else if (source === 'dollar') {
+      const dollar = parseFloat(riskDollarInput.value) || 0;
+      const percent = (dollar / startCapital) * 100;
+      riskPercentInput.value = percent.toFixed(2);
+    } else if (source === 'capital') {
+      // When capital changes, update dollar based on current percent
+      const percent = parseFloat(riskPercentInput.value) || 0;
+      const dollar = (startCapital * percent / 100);
+      riskDollarInput.value = Math.round(dollar);
+    }
+  }
+
+  // Add event listeners for expectancy updates
+  const winRateInput = document.getElementById('winRate');
+  const crvInput = document.getElementById('crv');
+  
+  if (winRateInput) {
+    winRateInput.addEventListener('input', updateExpectancy);
+  }
+  if (crvInput) {
+    crvInput.addEventListener('input', updateExpectancy);
+  }
+
+  // Add event listeners for risk input synchronization
+  const startCapitalInput = document.getElementById('startCapital');
+  const riskPercentInput = document.getElementById('riskPercent');
+  const riskDollarInput = document.getElementById('riskDollar');
+  
+  if (startCapitalInput) {
+    startCapitalInput.addEventListener('input', () => syncRiskInputs('capital'));
+  }
+  if (riskPercentInput) {
+    riskPercentInput.addEventListener('input', () => syncRiskInputs('percent'));
+  }
+  if (riskDollarInput) {
+    riskDollarInput.addEventListener('input', () => syncRiskInputs('dollar'));
+  }
+
+  // Initialize expectancy and run initial simulation
+  if (document.getElementById('equityChart')) {
+    updateExpectancy();
+    syncRiskInputs('percent'); // Initialize dollar value
+    runEquitySimulation();
+  }
 });
