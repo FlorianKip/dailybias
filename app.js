@@ -1053,4 +1053,239 @@ document.addEventListener("DOMContentLoaded", () => {
     syncRiskInputs('percent'); // Initialize dollar value
     runEquitySimulation();
   }
+
+  // =========================================================
+  // ATAS Knowledge Assistant Functions
+  // =========================================================
+
+  /**
+   * Toggles the ATAS Assistant panel visibility
+   * @param {Event} event - Click event
+   */
+  window.toggleATASAssistant = function(event) {
+    if (event) event.preventDefault();
+    const panel = document.getElementById('atas-assistant');
+    if (panel) {
+      panel.classList.toggle('hidden');
+      
+      // If opening, focus the textarea
+      if (!panel.classList.contains('hidden')) {
+        const textarea = document.getElementById('assistant-question');
+        if (textarea) {
+          setTimeout(() => textarea.focus(), 100);
+        }
+      }
+    }
+  };
+
+  /**
+   * Sets a quick prompt template based on button clicked
+   * @param {string} promptId - ID of the quick prompt
+   */
+  window.setQuickPrompt = function(promptId) {
+    if (typeof ATAS_KNOWLEDGE_BASE === 'undefined') return;
+    
+    const prompts = ATAS_KNOWLEDGE_BASE.quickPrompts;
+    const prompt = prompts.find(p => p.id === promptId);
+    
+    if (!prompt) return;
+    
+    const textarea = document.getElementById('assistant-question');
+    if (textarea) {
+      textarea.value = prompt.prompt + ' ';
+      textarea.placeholder = prompt.placeholder;
+      textarea.focus();
+      updateAssistantPromptPreview();
+    }
+    
+    // Update active state for quick buttons
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    if (event && event.target) {
+      event.target.classList.add('active');
+    }
+    
+    // Auto-select appropriate category
+    const categorySelect = document.getElementById('assistant-category');
+    if (categorySelect) {
+      if (promptId === 'create-indicator' || promptId === 'create-strategy') {
+        categorySelect.value = 'snippets';
+      } else if (promptId === 'debug-code') {
+        categorySelect.value = 'mistakes';
+      } else if (promptId === 'explain-concept') {
+        categorySelect.value = 'glossary';
+      }
+    }
+  };
+
+  /**
+   * Updates the prompt preview based on current question and category
+   */
+  function updateAssistantPromptPreview() {
+    if (typeof ATAS_KNOWLEDGE_BASE === 'undefined') return;
+    
+    const textarea = document.getElementById('assistant-question');
+    const categorySelect = document.getElementById('assistant-category');
+    const preview = document.getElementById('prompt-preview');
+    const charCount = document.getElementById('prompt-char-count');
+    
+    if (!textarea || !preview) return;
+    
+    const question = textarea.value.trim();
+    const category = categorySelect ? categorySelect.value : 'all';
+    
+    if (!question) {
+      preview.innerHTML = '<em>Enter a question above to generate a prompt...</em>';
+      if (charCount) charCount.textContent = '0 characters';
+      return;
+    }
+    
+    // Generate the full prompt
+    const fullPrompt = ATAS_KNOWLEDGE_BASE.generatePrompt(question, category);
+    
+    // Show truncated preview
+    const maxPreviewLength = 500;
+    let displayText = fullPrompt;
+    if (fullPrompt.length > maxPreviewLength) {
+      displayText = fullPrompt.substring(0, maxPreviewLength) + '\n\n... [truncated preview - full prompt: ' + fullPrompt.length + ' chars]';
+    }
+    
+    preview.textContent = displayText;
+    if (charCount) charCount.textContent = fullPrompt.length.toLocaleString() + ' characters';
+  }
+
+  /**
+   * Shows a toast notification
+   * @param {string} message - Message to display
+   * @param {string} type - Type of toast (success, warning, error)
+   */
+  function showAssistantToast(message, type = 'success') {
+    // Remove any existing toast
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+      existingToast.remove();
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    
+    // Set color based on type
+    if (type === 'warning') {
+      toast.style.background = 'rgba(245, 158, 11, 0.95)';
+    } else if (type === 'error') {
+      toast.style.background = 'rgba(239, 68, 68, 0.95)';
+    }
+    
+    document.body.appendChild(toast);
+    
+    // Remove after animation
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+
+  /**
+   * Copies the generated prompt to clipboard
+   */
+  window.copyPromptToClipboard = function() {
+    if (typeof ATAS_KNOWLEDGE_BASE === 'undefined') {
+      showAssistantToast('Knowledge base not loaded', 'error');
+      return;
+    }
+    
+    const textarea = document.getElementById('assistant-question');
+    const categorySelect = document.getElementById('assistant-category');
+    
+    if (!textarea) return;
+    
+    const question = textarea.value.trim();
+    if (!question) {
+      showAssistantToast('Please enter a question first', 'warning');
+      return;
+    }
+    
+    const category = categorySelect ? categorySelect.value : 'all';
+    const fullPrompt = ATAS_KNOWLEDGE_BASE.generatePrompt(question, category);
+    
+    navigator.clipboard.writeText(fullPrompt).then(() => {
+      showAssistantToast('✓ Prompt copied to clipboard!', 'success');
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+      showAssistantToast('Failed to copy prompt', 'error');
+    });
+  };
+
+  /**
+   * Opens ChatGPT in a new tab
+   */
+  window.openInChatGPT = function() {
+    const textarea = document.getElementById('assistant-question');
+    
+    if (!textarea || !textarea.value.trim()) {
+      showAssistantToast('Please enter a question first', 'warning');
+      return;
+    }
+    
+    // Copy prompt first
+    copyPromptToClipboard();
+    
+    // Open ChatGPT
+    window.open('https://chat.openai.com/', '_blank');
+  };
+
+  /**
+   * Opens Claude in a new tab
+   */
+  window.openInClaude = function() {
+    const textarea = document.getElementById('assistant-question');
+    
+    if (!textarea || !textarea.value.trim()) {
+      showAssistantToast('Please enter a question first', 'warning');
+      return;
+    }
+    
+    // Copy prompt first
+    copyPromptToClipboard();
+    
+    // Open Claude
+    window.open('https://claude.ai/', '_blank');
+  };
+
+  // Initialize ATAS Assistant event listeners
+  const assistantTextarea = document.getElementById('assistant-question');
+  const assistantCategorySelect = document.getElementById('assistant-category');
+  
+  if (assistantTextarea) {
+    assistantTextarea.addEventListener('input', updateAssistantPromptPreview);
+  }
+  
+  if (assistantCategorySelect) {
+    assistantCategorySelect.addEventListener('change', updateAssistantPromptPreview);
+  }
+  
+  // Close panel when clicking outside
+  document.addEventListener('click', function(event) {
+    const panel = document.getElementById('atas-assistant');
+    const navItem = event.target.closest('.nav-item');
+    
+    if (panel && !panel.classList.contains('hidden')) {
+      // Check if click is outside the panel and not on the nav item that opens it
+      if (!panel.contains(event.target) && 
+          (!navItem || !navItem.textContent.includes('ATAS Assistant'))) {
+        panel.classList.add('hidden');
+      }
+    }
+  });
+  
+  // Keyboard shortcut to close panel (Escape)
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      const panel = document.getElementById('atas-assistant');
+      if (panel && !panel.classList.contains('hidden')) {
+        panel.classList.add('hidden');
+      }
+    }
+  });
 });
