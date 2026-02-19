@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="knowledge-base.js"></script>
 </head>
 
 <body>
@@ -22,8 +23,86 @@
       <a href="#equity-simulator" class="nav-item">📈 Monte Carlo Simulator</a>
       <a href="https://html.cafe/xace0383a" target="_blank" class="nav-item">🔗 US News</a>
       <a href="https://github.com/FlorianKip/dailybias" target="_blank" class="nav-item">💻 GitHub</a>
+      <a href="#" class="nav-item" onclick="toggleATASAssistant(event)">🤖 ATAS Assistant</a>
     </div>
   </nav>
+
+  <!-- ATAS Knowledge Assistant Panel -->
+  <div id="atas-assistant" class="assistant-panel hidden">
+    <div class="assistant-header">
+      <h3>🤖 ATAS Knowledge Assistant</h3>
+      <button class="assistant-close" onclick="toggleATASAssistant(event)">&times;</button>
+    </div>
+    
+    <div class="assistant-content">
+      <!-- Category Selector -->
+      <div class="assistant-categories">
+        <label>Context:</label>
+        <select id="assistant-category">
+          <option value="all">📚 All Documentation</option>
+          <option value="snippets">📝 Code Snippets</option>
+          <option value="api">📚 API Reference</option>
+          <option value="mistakes">⚠️ Common Mistakes</option>
+          <option value="glossary">📖 Glossary</option>
+        </select>
+      </div>
+
+      <!-- Quick Prompts -->
+      <div class="assistant-quick-prompts">
+        <label>Quick Prompts:</label>
+        <div class="quick-prompt-buttons">
+          <button onclick="setQuickPrompt('create-indicator')" class="quick-btn">📊 Create Indicator</button>
+          <button onclick="setQuickPrompt('create-strategy')" class="quick-btn">🤖 Create Strategy</button>
+          <button onclick="setQuickPrompt('debug-code')" class="quick-btn">🔧 Debug Code</button>
+          <button onclick="setQuickPrompt('explain-concept')" class="quick-btn">💡 Explain Concept</button>
+        </div>
+      </div>
+
+      <!-- User Input -->
+      <div class="assistant-input-area">
+        <label>Your Question:</label>
+        <textarea id="assistant-question" placeholder="Ask about ATAS indicators, strategies, or API...&#10;&#10;Examples:&#10;• Create an RSI indicator with custom period&#10;• How do I add a trailing stop?&#10;• What's the difference between Price and TriggerPrice?"></textarea>
+      </div>
+
+      <!-- Generated Prompt Preview -->
+      <div class="assistant-preview">
+        <div class="preview-header">
+          <label>Generated Prompt Preview:</label>
+          <span id="prompt-char-count">0 characters</span>
+        </div>
+        <div id="prompt-preview" class="prompt-preview-box">
+          <em>Enter a question above to generate a prompt...</em>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="assistant-actions">
+        <button onclick="copyPromptToClipboard()" class="action-btn primary">
+          📋 Copy Prompt
+        </button>
+        <button onclick="openInChatGPT()" class="action-btn">
+          🚀 Open ChatGPT
+        </button>
+        <button onclick="openInClaude()" class="action-btn">
+          🤖 Open Claude
+        </button>
+      </div>
+
+      <!-- Help Text -->
+      <div class="assistant-help">
+        <details>
+          <summary>ℹ️ How to use</summary>
+          <ol>
+            <li>Select a context category (or use "All")</li>
+            <li>Type your question or use a quick prompt</li>
+            <li>Click "Copy Prompt" to copy the full context + question</li>
+            <li>Open ChatGPT or Claude and paste the prompt</li>
+            <li>The AI will have full ATAS API knowledge to help you!</li>
+          </ol>
+        </details>
+      </div>
+    </div>
+  </div>
 
   <div id="daily-bias" class="container">
     <div class="header-container">
